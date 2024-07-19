@@ -15,6 +15,7 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
@@ -26,14 +27,19 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.hilt.navigation.compose.hiltViewModel
 import com.dayj.dayj.R
 import com.dayj.dayj.ui.theme.TextBlack
+import kotlin.random.Random
 
 @Composable
 fun FriendsGroupListScreen(
-    navToGroupDetail: () -> Unit
+    navToGroupDetail: () -> Unit,
+    groupListViewModel: GroupListViewModel = hiltViewModel()
 ) {
     var isCreateGroupDialogOpen = remember{ mutableStateOf(false) }
+    val groupList = groupListViewModel.groupList.collectAsState().value
+
     Box(
         modifier = Modifier
             .fillMaxSize()
@@ -69,35 +75,9 @@ fun FriendsGroupListScreen(
                 modifier = Modifier
                     .padding(top = 20.dp)
             ) {
-                val groups = listOf(
-                    FriendsGroupEntity(
-                        groupId = 1,
-                        groupName = "그룹 1",
-                        participantsCount = 7,
-                        goal = "그룹 1 목표"
-                    ),
-                    FriendsGroupEntity(
-                        groupId = 2,
-                        groupName = "테스트 그룹 22",
-                        participantsCount = 10,
-                        goal = "그룹 2 목표"
-                    ),
-                    FriendsGroupEntity(
-                        groupId = 3,
-                        groupName = "테스트 그룹 33",
-                        participantsCount = 12,
-                        goal = "그룹 3 목표"
-                    ),
-                    FriendsGroupEntity(
-                        groupId = 4,
-                        groupName = "테스트 그룹 44",
-                        participantsCount = 5,
-                        goal = "그룹 4 목표"
-                    ),
-                )
 
                 items(
-                    items = groups,
+                    items = groupList,
                     itemContent = {
                         Box(
                             modifier = Modifier
@@ -110,9 +90,23 @@ fun FriendsGroupListScreen(
                 )
             }
         }
+
         if(isCreateGroupDialogOpen.value) {
             CreateGroupDialog(
-                onDismiss = { isCreateGroupDialogOpen.value = false }
+                onDismiss = {
+                    isCreateGroupDialogOpen.value = false
+                            },
+                onCreateGroup = { groupName ->
+                    isCreateGroupDialogOpen.value = false
+                    groupListViewModel.addGroup(
+                        FriendsGroupEntity(
+                            groupId = Random.nextInt(),
+                            groupName = groupName,
+                            participantsCount = 1,
+                            goal = ""
+                        )
+                    )
+                }
             )
 
         }

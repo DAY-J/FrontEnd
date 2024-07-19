@@ -14,7 +14,6 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -33,11 +32,10 @@ import androidx.compose.ui.window.Dialog
 import com.dayj.dayj.ui.theme.Black3A
 import com.dayj.dayj.ui.theme.GrayDDD
 
-
 @Composable
-fun CreateGroupDialog(
+fun InviteFriendDialog(
     onDismiss: () -> Unit,
-    onCreateGroup: (groupName: String) -> Unit
+    onClickOk: () -> Unit
 ) {
     val screenWidth = LocalConfiguration.current.screenWidthDp
     val dialogWidth = screenWidth * 0.9
@@ -62,7 +60,7 @@ fun CreateGroupDialog(
                 horizontalAlignment = Alignment.CenterHorizontally,
             ) {
                 Text(
-                    text = "추가할 그룹명을 입력하세요.",
+                    text = "추가할 친구의 이메일을 입력하세요.",
                     style = TextStyle(
                         color = Black3A,
                         fontWeight = FontWeight.Medium,
@@ -114,6 +112,7 @@ fun CreateGroupDialog(
                     Text(
                         modifier = Modifier
                             .weight(1f)
+                            .clickable { onDismiss() }
                             .drawBehind {
                                 drawLine(
                                     color = Black3A,
@@ -122,10 +121,7 @@ fun CreateGroupDialog(
                                     strokeWidth = 1f
                                 )
                             }
-                            .padding(vertical = 12.dp)
-                            .clickable {
-                                onDismiss()
-                            },
+                            .padding(vertical = 12.dp),
                         text = "취소",
                         style = TextStyle(
                             color = Black3A,
@@ -138,10 +134,8 @@ fun CreateGroupDialog(
                     Text(
                         modifier = Modifier
                             .weight(1f)
-                            .padding(vertical = 12.dp)
-                            .clickable {
-                                onCreateGroup(groupName.value)
-                            },
+                            .clickable { onClickOk() }
+                            .padding(vertical = 12.dp),
                         text = "확인",
                         style = TextStyle(
                             color = Black3A,

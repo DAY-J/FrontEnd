@@ -1,5 +1,7 @@
 package com.dayj.dayj.friends
 
+import android.util.Log
+import android.widget.Toast
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -27,6 +29,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
@@ -69,6 +72,7 @@ val dummyAchievements = dummyFriends.map {
 fun GroupDetailScreen(
     onClickBack: () -> Unit
 ) {
+    val context = LocalContext.current
     val dummyGoals = remember {
         mutableStateOf(
             dummyFriends.map { friend ->
@@ -83,40 +87,79 @@ fun GroupDetailScreen(
         )
     }
     val selectedFriendIdx = remember { mutableStateOf(0) }
+    val inviteFriendDialogOpened = remember { mutableStateOf(false) }
+    val exitGroupDialogOpened = remember { mutableStateOf(false) }
 
-
-    Column(
+    Box(
         modifier = Modifier
             .fillMaxSize()
             .background(color = Background)
     ) {
-        GroupToolbar(onClickBack = onClickBack)
-
-        LazyColumn(
-            modifier = Modifier,
-            contentPadding = PaddingValues(top = 28.dp)
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
         ) {
-            item {
-                GroupJointGoalView()
-                Spacer(modifier = Modifier.padding(top = 28.dp))
-                AchievementListView(achievements = dummyAchievements)
-                HorizontalDivider(height = 8, verticalPadding = 20)
-                FriendListView(
-                    selectedFriendIdx = selectedFriendIdx.value,
-                    friends = dummyFriends,
-                    onClickFriend = { idx ->
-                        selectedFriendIdx.value = idx
+            GroupToolbar(
+                onClickBack = onClickBack,
+                onClickInviteFriend = {
+                    inviteFriendDialogOpened.value = true
+                },
+                onClickExit = {
+                    exitGroupDialogOpened.value = true
+                }
+            )
+
+            LazyColumn(
+                modifier = Modifier,
+                contentPadding = PaddingValues(top = 28.dp)
+            ) {
+                item {
+                    GroupJointGoalView()
+                    Spacer(modifier = Modifier.padding(top = 28.dp))
+                    AchievementListView(achievements = dummyAchievements)
+                    HorizontalDivider(height = 8, verticalPadding = 20)
+                    FriendListView(
+                        selectedFriendIdx = selectedFriendIdx.value,
+                        friends = dummyFriends,
+                        onClickFriend = { idx ->
+                            selectedFriendIdx.value = idx
+                        }
+                    )
+                    HorizontalDivider(height = 1, verticalPadding = 20)
+                }
+
+                items(
+                    items = dummyGoals.value.find {
+                        it.first().userId == dummyFriends.get(selectedFriendIdx.value).userId
+                    } ?: emptyList(),
+                    itemContent = {
+                        GoalByFriendItem(it)
                     }
                 )
-                HorizontalDivider(height = 1, verticalPadding = 20)
             }
+        }
 
-            items(
-                items = dummyGoals.value.find {
-                    it.first().userId == dummyFriends.get(selectedFriendIdx.value).userId
-                } ?: emptyList(),
-                itemContent = {
-                    GoalByFriendItem(it)
+        if(inviteFriendDialogOpened.value) {
+            InviteFriendDialog(
+                onDismiss = {
+                    inviteFriendDialogOpened.value = false
+                },
+                onClickOk = {
+                    inviteFriendDialogOpened.value = false
+                }
+            )
+        }
+
+        if(exitGroupDialogOpened.value) {
+            ExitGroupDialog(
+                groupName = "그룹명1",
+                onDismiss = {
+                    exitGroupDialogOpened.value = false
+                },
+                onClickExit = {
+                    exitGroupDialogOpened.value = false
+                    Toast.makeText(context, "그룹명1 그룹을 나갔습니다.", Toast.LENGTH_SHORT).show()
+                    onClickBack()
                 }
             )
         }
@@ -137,8 +180,12 @@ fun ColumnScope.HorizontalDivider(height: Int, verticalPadding: Int = 0) {
 
 @Composable
 fun GroupToolbar(
-    onClickBack: () -> Unit
+    onClickBack: () -> Unit,
+    onClickInviteFriend: () -> Unit,
+    onClickExit: () -> Unit
 ) {
+    val groupSettingDialogVisible = remember { mutableStateOf(false) }
+
     Row(
         modifier = Modifier
             .padding(start = 16.dp, top = 24.dp, end = 16.dp),
@@ -148,7 +195,8 @@ fun GroupToolbar(
             modifier = Modifier
                 .clickable {
                     onClickBack()
-                }
+                },
+            verticalAlignment = Alignment.CenterVertically
         ) {
             Image(
                 painter = painterResource(id = R.drawable.left_arrow_black),
@@ -166,7 +214,27 @@ fun GroupToolbar(
         }
 
         Spacer(modifier = Modifier.weight(1f))
+
+        GroupSettingDialog(
+            expanded = groupSettingDialogVisible.value,
+            onClickInvite = {
+                onClickInviteFriend()
+                groupSettingDialogVisible.value = false
+            },
+            onClickExit = {
+                onClickExit()
+                groupSettingDialogVisible.value = false
+            },
+            onDismiss = {
+                groupSettingDialogVisible.value = false
+            }
+        )
+
         Image(
+            modifier = Modifier
+                .clickable {
+                    groupSettingDialogVisible.value = true
+                },
             painter = painterResource(id = R.drawable.ic_more),
             contentDescription = ""
         )

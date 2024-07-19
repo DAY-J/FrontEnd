@@ -15,9 +15,17 @@ val Black2A = Color(0XFF2a2a2a)
 val Green12 = Color(0XFF12461f)
 val LightGrayAB = Color(0XFFababab)
 val Gray6F = Color(0XFF6f6f6f)
+val GrayE3 = Color(0XFFe3e2e0)
+val GrayC0 = Color(0XFFC0C0C0)
+
 val GrayCB = Color(0XFFcbc6c1)
 val Black3A = Color(0XFF3a3a3a)
 val GrayDDD = Color(0XFFdddbd8)
 val GrayAFAF = Color(0XFFafafaf)
+val Gray9A = Color(0XFF9a9a9a)
+
+
 val TextBlack = Color(0XFF2a2a2a)
 val TextGray = Color(0XFF6f6f6f)
+val GreenC0D = Color(0XFFc0d6c6)
+val RedFF00 = Color(0XFFff0000)

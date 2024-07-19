@@ -1,9 +1,6 @@
 package com.dayj.dayj.friends
 
-import androidx.compose.foundation.background
-import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -11,13 +8,9 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.drawBehind
@@ -31,17 +24,16 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
 import com.dayj.dayj.ui.theme.Black3A
-import com.dayj.dayj.ui.theme.GrayDDD
-
+import com.dayj.dayj.ui.theme.RedFF00
 
 @Composable
-fun CreateGroupDialog(
+fun ExitGroupDialog(
+    groupName: String,
     onDismiss: () -> Unit,
-    onCreateGroup: (groupName: String) -> Unit
+    onClickExit: () -> Unit
 ) {
     val screenWidth = LocalConfiguration.current.screenWidthDp
     val dialogWidth = screenWidth * 0.9
-    val groupName = remember { mutableStateOf("") }
 
     Dialog(
         onDismissRequest = {
@@ -62,40 +54,23 @@ fun CreateGroupDialog(
                 horizontalAlignment = Alignment.CenterHorizontally,
             ) {
                 Text(
-                    text = "추가할 그룹명을 입력하세요.",
+                    text = "${groupName}",
                     style = TextStyle(
                         color = Black3A,
-                        fontWeight = FontWeight.Medium,
+                        fontWeight = FontWeight.Bold,
                         fontSize = 14.sp
                     )
                 )
 
-                BasicTextField(
+                Text(
                     modifier = Modifier
-                        .padding(top = 18.dp, start = 6.dp, end = 6.dp)
-                        .fillMaxWidth()
-                        .border(1.dp, Color.Transparent)
-                        .background(
-                            color = GrayDDD,
-                            shape = RoundedCornerShape(8.dp)
-                        ),
-                    textStyle = TextStyle(
+                        .padding(top = 5.dp),
+                    text = "그룹을 나가시겠어요?",
+                    style = TextStyle(
                         color = Black3A,
-                        fontWeight = FontWeight.Medium,
-                        fontSize = 16.sp
-                    ),
-                    decorationBox = { innerTextField ->
-                        Box(
-                            modifier = Modifier
-                                .padding(vertical = 5.dp, horizontal = 5.dp)
-                        ) {
-                            innerTextField()
-                        }
-                    },
-                    value = groupName.value,
-                    onValueChange = {
-                        groupName.value = it
-                    }
+                        fontWeight = FontWeight.Normal,
+                        fontSize = 12.sp
+                    )
                 )
 
                 Row(
@@ -114,6 +89,7 @@ fun CreateGroupDialog(
                     Text(
                         modifier = Modifier
                             .weight(1f)
+                            .clickable { onDismiss() }
                             .drawBehind {
                                 drawLine(
                                     color = Black3A,
@@ -122,10 +98,7 @@ fun CreateGroupDialog(
                                     strokeWidth = 1f
                                 )
                             }
-                            .padding(vertical = 12.dp)
-                            .clickable {
-                                onDismiss()
-                            },
+                            .padding(vertical = 12.dp),
                         text = "취소",
                         style = TextStyle(
                             color = Black3A,
@@ -138,13 +111,11 @@ fun CreateGroupDialog(
                     Text(
                         modifier = Modifier
                             .weight(1f)
-                            .padding(vertical = 12.dp)
-                            .clickable {
-                                onCreateGroup(groupName.value)
-                            },
-                        text = "확인",
+                            .clickable { onClickExit() }
+                            .padding(vertical = 12.dp),
+                        text = "나가기",
                         style = TextStyle(
-                            color = Black3A,
+                            color = RedFF00,
                             fontWeight = FontWeight.Medium,
                             fontSize = 14.sp,
                             textAlign = TextAlign.Center

@@ -21,7 +21,6 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.pager.HorizontalPager
-import androidx.compose.foundation.pager.PagerState
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Surface
@@ -41,75 +40,142 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.composable
+import androidx.navigation.compose.rememberNavController
 import com.dayj.dayj.friends.FriendsContainerScreen
 import com.dayj.dayj.home.HomeScreen
+import com.dayj.dayj.lounge.LoungeTagEnum
+import com.dayj.dayj.lounge.lounge.LoungeScreen
+import com.dayj.dayj.lounge.lounge.SearchPostingScreen
+import com.dayj.dayj.lounge.posting.CommentEntity
+import com.dayj.dayj.lounge.posting.LoungePostingEntity
+import com.dayj.dayj.lounge.posting.LoungePostingScreen
+import com.dayj.dayj.lounge.write.PostWritingScreen
 import com.dayj.dayj.ui.theme.Background
 import com.dayj.dayj.ui.theme.DayJTheme
+import com.thedeanda.lorem.LoremIpsum
+import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
+import kotlin.random.Random
 
+@AndroidEntryPoint
 class MainActivity : ComponentActivity() {
-    private val bottomItems = listOf(
-        BottomNavItem.HOME,
-        BottomNavItem.STATISTICS,
-        BottomNavItem.LOUNGE,
-        BottomNavItem.FRIENDS,
-        BottomNavItem.MY
-    )
 
     @RequiresApi(Build.VERSION_CODES.O)
-    @OptIn(ExperimentalFoundationApi::class)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
-            val coroutineScope = rememberCoroutineScope()
-            val pagerState = rememberPagerState(initialPage = 0) { bottomItems.size }
-
+            val navController = rememberNavController()
+            var postingId = -1
             DayJTheme {
                 Surface(
                     modifier = Modifier.fillMaxSize(),
                     color = Background
                 ) {
-
-                    Box(
-                        modifier = Modifier
-                            .fillMaxSize()
-                    ) {
-                        MainPager(pagerState)
-                        BottomNavigationBar(
-                            bottomItems = bottomItems,
-                            selectedTabIdx = pagerState.targetPage,
-                            onClickTab = { idx ->
-                                coroutineScope.launch {
-                                    pagerState.scrollToPage(idx)
+                    NavHost(navController = navController, startDestination = NavigatorScreens.Main.name) {
+                        composable(NavigatorScreens.Main.name) {
+                            MainScreen(
+                                navToPostingDetail = {
+                                    postingId = it
+                                    navController.navigate(
+                                        NavigatorScreens.PostingDetail.name,
+                                    )
+                                },
+                                navToWritePosting = {
+                                    navController.navigate(
+                                        NavigatorScreens.WritePosting.name,
+                                    )
+                                },
+                                navToSearchPosting = {
+                                    navController.navigate(
+                                        NavigatorScreens.SearchPosting.name
+                                    )
                                 }
-                            }
-                        )
+                            )
+                        }
+                        composable(NavigatorScreens.PostingDetail.name) {
+                            LoungePostingScreen(
+                                postingId = postingId,
+                                navHostController = navController
+                            )
+                        }
+
+                        composable(NavigatorScreens.WritePosting.name) {
+                            PostWritingScreen(
+                                navHostController = navController
+                            )
+                        }
+
+                        composable(NavigatorScreens.SearchPosting.name) {
+                            SearchPostingScreen(
+                                navHostController = navController,
+                                navToPostingDetail = {
+                                    postingId = it
+                                    navController.navigate(
+                                        NavigatorScreens.PostingDetail.name,
+                                    )
+                                }
+                            )
+                        }
                     }
+
                 }
             }
         }
     }
 }
 
-
 @RequiresApi(Build.VERSION_CODES.O)
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
-fun MainPager(
-    pagerState: PagerState
+fun MainScreen(
+    navToPostingDetail: (postingId: Int) -> Unit,
+    navToWritePosting: () -> Unit,
+    navToSearchPosting: () -> Unit
 ) {
-    HorizontalPager(
-        state = pagerState,
-    ) { page ->
-        when (page) {
-            0 -> HomeScreen()
-            1 -> StatisticsScreen()
-            2 -> LoungeScreen()
-            3 -> FriendsContainerScreen()
-            4 -> MyPageScreen()
+    val bottomItems = listOf(
+        BottomNavItem.HOME,
+        BottomNavItem.STATISTICS,
+        BottomNavItem.LOUNGE,
+        BottomNavItem.FRIENDS,
+        BottomNavItem.MY
+    )
+    val coroutineScope = rememberCoroutineScope()
+    val pagerState = rememberPagerState(initialPage = 0) { bottomItems.size }
+
+    Box(
+        modifier = Modifier
+            .fillMaxSize()
+    ) {
+        HorizontalPager(
+            state = pagerState,
+        ) { page ->
+            when (page) {
+                0 -> HomeScreen()
+                1 -> StatisticsScreen()
+                2 -> LoungeScreen(
+                    navToPostingDetail = navToPostingDetail,
+                    navToWritePosting = navToWritePosting,
+                    navToSearchPosting = navToSearchPosting
+                )
+                3 -> FriendsContainerScreen()
+                4 -> MyPageScreen()
+            }
         }
+        
+        BottomNavigationBar(
+            bottomItems = bottomItems,
+            selectedTabIdx = pagerState.targetPage,
+            onClickTab = { idx ->
+                coroutineScope.launch {
+                    pagerState.scrollToPage(idx)
+                }
+            }
+        )
     }
 }
+
 
 @Composable
 fun BoxScope.BottomNavigationBar(bottomItems: List<BottomNavItem>, selectedTabIdx: Int, onClickTab: (Int) -> Unit) {
