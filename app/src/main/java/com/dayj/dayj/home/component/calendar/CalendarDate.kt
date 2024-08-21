@@ -1,4 +1,4 @@
-package com.dayj.dayj.home
+package com.dayj.dayj.home.component.calendar
 
 data class CalendarDate(
     val day: Int,

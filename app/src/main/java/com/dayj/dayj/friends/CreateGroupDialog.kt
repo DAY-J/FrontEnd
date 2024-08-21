@@ -2,6 +2,7 @@ package com.dayj.dayj.friends
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -34,7 +35,10 @@ import com.dayj.dayj.ui.theme.GrayDDD
 
 
 @Composable
-fun CreateGroupDialog(onDismiss: () -> Unit) {
+fun CreateGroupDialog(
+    onDismiss: () -> Unit,
+    onCreateGroup: (groupName: String) -> Unit
+) {
     val screenWidth = LocalConfiguration.current.screenWidthDp
     val dialogWidth = screenWidth * 0.9
     val groupName = remember { mutableStateOf("") }
@@ -118,7 +122,10 @@ fun CreateGroupDialog(onDismiss: () -> Unit) {
                                     strokeWidth = 1f
                                 )
                             }
-                            .padding(vertical = 12.dp),
+                            .padding(vertical = 12.dp)
+                            .clickable {
+                                onDismiss()
+                            },
                         text = "취소",
                         style = TextStyle(
                             color = Black3A,
@@ -131,7 +138,10 @@ fun CreateGroupDialog(onDismiss: () -> Unit) {
                     Text(
                         modifier = Modifier
                             .weight(1f)
-                            .padding(vertical = 12.dp),
+                            .padding(vertical = 12.dp)
+                            .clickable {
+                                onCreateGroup(groupName.value)
+                            },
                         text = "확인",
                         style = TextStyle(
                             color = Black3A,

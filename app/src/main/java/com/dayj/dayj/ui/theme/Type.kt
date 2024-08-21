@@ -1,6 +1,9 @@
 package com.dayj.dayj.ui.theme
 
+import androidx.compose.material3.SwitchDefaults
 import androidx.compose.material3.Typography
+import androidx.compose.runtime.Composable
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
@@ -32,3 +35,26 @@ val Typography = Typography(
     )
     */
 )
+
+
+val textStyle = TextStyle(
+    fontSize = 14.sp,
+    lineHeight = 22.sp,
+    letterSpacing = (-0.28).sp,
+    color = TextColor,
+    fontFamily = FontFamily.Default,
+    fontWeight = FontWeight.Normal
+)
+
+
+val switchColors
+    @Composable get() = SwitchDefaults.colors(
+        uncheckedBorderColor = GrayA6,
+        uncheckedTrackColor = GrayA6,
+        uncheckedIconColor = Color.White,
+        uncheckedThumbColor = Color.White,
+        checkedBorderColor = Green12,
+        checkedTrackColor = Green12,
+        checkedIconColor = Color.White,
+        checkedThumbColor = Color.White
+    )
