@@ -4,10 +4,6 @@ enum class NavigatorScreens {
     Main,
     PostingDetail,
     WritePosting,
-<<<<<<< HEAD
-    SearchPosting
-}
-=======
     SearchPosting,
     AddToDo
 }
@@ -23,4 +19,3 @@ sealed class ScreenType(
     data class UpdateTodo(val passItem: String = "passItem") :
         ScreenType("updateTodo/{${passItem}}", "updateTodo/${passItem}")
 }
->>>>>>> 0e177dd (홈 통계 추가)

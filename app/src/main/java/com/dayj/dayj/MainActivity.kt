@@ -43,20 +43,6 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-<<<<<<< HEAD
-import com.dayj.dayj.friends.FriendsContainerScreen
-import com.dayj.dayj.home.HomeScreen
-import com.dayj.dayj.lounge.LoungeTagEnum
-import com.dayj.dayj.lounge.lounge.LoungeScreen
-import com.dayj.dayj.lounge.lounge.SearchPostingScreen
-import com.dayj.dayj.lounge.posting.CommentEntity
-import com.dayj.dayj.lounge.posting.LoungePostingEntity
-import com.dayj.dayj.lounge.posting.LoungePostingScreen
-import com.dayj.dayj.lounge.write.PostWritingScreen
-import com.dayj.dayj.ui.theme.Background
-import com.dayj.dayj.ui.theme.DayJTheme
-import com.thedeanda.lorem.LoremIpsum
-=======
 import androidx.navigation.navArgument
 import com.dayj.dayj.friends.FriendsContainerScreen
 import com.dayj.dayj.home.HomeScreen
@@ -70,10 +56,8 @@ import com.dayj.dayj.statistics.StatisticsScreen
 import com.dayj.dayj.ui.theme.Background
 import com.dayj.dayj.ui.theme.DayJTheme
 import com.dayj.dayj.util.NavigationUtil
->>>>>>> 0e177dd (홈 통계 추가)
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
-import kotlin.random.Random
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
@@ -89,14 +73,10 @@ class MainActivity : ComponentActivity() {
                     modifier = Modifier.fillMaxSize(),
                     color = Background
                 ) {
-<<<<<<< HEAD
-                    NavHost(navController = navController, startDestination = NavigatorScreens.Main.name) {
-=======
                     NavHost(
                         navController = navController,
                         startDestination = NavigatorScreens.Main.name
                     ) {
->>>>>>> 0e177dd (홈 통계 추가)
                         composable(NavigatorScreens.Main.name) {
                             MainScreen(
                                 navToPostingDetail = {
@@ -114,8 +94,6 @@ class MainActivity : ComponentActivity() {
                                     navController.navigate(
                                         NavigatorScreens.SearchPosting.name
                                     )
-<<<<<<< HEAD
-=======
                                 },
                                 navToAddToDo = {
                                     navController.navigate(
@@ -126,7 +104,6 @@ class MainActivity : ComponentActivity() {
                                     navController.navigate(
                                         ScreenType.UpdateTodo(NavigationUtil.passItem(item)).sendRoute
                                     )
->>>>>>> 0e177dd (홈 통계 추가)
                                 }
                             )
                         }
@@ -154,8 +131,6 @@ class MainActivity : ComponentActivity() {
                                 }
                             )
                         }
-<<<<<<< HEAD
-=======
 
                         composable(NavigatorScreens.AddToDo.name) {
                             TodoScreen.Add(navController = navController)
@@ -171,9 +146,7 @@ class MainActivity : ComponentActivity() {
                         ) {
                             TodoScreen.Update(navController = navController)
                         }
->>>>>>> 0e177dd (홈 통계 추가)
                     }
-
                 }
             }
         }
@@ -186,13 +159,9 @@ class MainActivity : ComponentActivity() {
 fun MainScreen(
     navToPostingDetail: (postingId: Int) -> Unit,
     navToWritePosting: () -> Unit,
-<<<<<<< HEAD
-    navToSearchPosting: () -> Unit
-=======
     navToSearchPosting: () -> Unit,
     navToAddToDo: () -> Unit,
     navToUpdateTodo: (PlanResponse) -> Unit
->>>>>>> 0e177dd (홈 통계 추가)
 ) {
     val bottomItems = listOf(
         BottomNavItem.HOME,
@@ -212,30 +181,19 @@ fun MainScreen(
             state = pagerState,
         ) { page ->
             when (page) {
-<<<<<<< HEAD
-                0 -> HomeScreen()
-=======
                 0 -> HomeScreen(navToAddToDo = navToAddToDo, navToUpdateTodo = navToUpdateTodo)
->>>>>>> 0e177dd (홈 통계 추가)
                 1 -> StatisticsScreen()
                 2 -> LoungeScreen(
                     navToPostingDetail = navToPostingDetail,
                     navToWritePosting = navToWritePosting,
                     navToSearchPosting = navToSearchPosting
                 )
-<<<<<<< HEAD
-=======
 
->>>>>>> 0e177dd (홈 통계 추가)
                 3 -> FriendsContainerScreen()
                 4 -> MyPageScreen()
             }
         }
-<<<<<<< HEAD
-        
-=======
 
->>>>>>> 0e177dd (홈 통계 추가)
         BottomNavigationBar(
             bottomItems = bottomItems,
             selectedTabIdx = pagerState.targetPage,
