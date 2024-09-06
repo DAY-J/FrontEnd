@@ -5,7 +5,6 @@ enum class NavigatorScreens {
     PostingDetail,
     WritePosting,
     SearchPosting,
-    AddToDo
 }
 
 interface ScreenNavigation {
@@ -16,6 +15,9 @@ interface ScreenNavigation {
 sealed class ScreenType(
     override val route: String, override val sendRoute: String = ""
 ) : ScreenNavigation {
+    data class AddTodo(val selectDate : String = "selectDate") :
+        ScreenType("addTodo/{${selectDate}}", "addTodo/${selectDate}")
+
     data class UpdateTodo(val passItem: String = "passItem") :
         ScreenType("updateTodo/{${passItem}}", "updateTodo/${passItem}")
 }

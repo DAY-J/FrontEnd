@@ -10,22 +10,26 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.dayj.dayj.home.component.PlanTagSelector
 import com.dayj.dayj.home.component.TodoList
 import com.dayj.dayj.network.api.response.PlanResponse
 import com.dayj.dayj.ui.theme.DividerColor
+import java.time.LocalDate
 
 
 @Composable
 fun HomeScreen(
     viewModel: HomeViewModel = hiltViewModel(),
-    navToAddToDo: () -> Unit,
+    navToAddToDo: (LocalDate) -> Unit,
     navToUpdateTodo : (PlanResponse) -> Unit
 ) {
 
     val state = viewModel.homeViewState.collectAsState().value
+
+    val context = LocalContext.current
 
     LaunchedEffect(key1 = Unit) {
         viewModel.getPlans(date = state.selectedData)
@@ -57,7 +61,9 @@ fun HomeScreen(
         TodoList(
             list = state.getFilterPlans(),
             onUpdatePlanCheck = viewModel::updatePlanCheck,
-            onItemClick = {},
+            onItemClick = {
+
+            },
             onDelete = viewModel::deletePlan,
             onRouteUpdate = navToUpdateTodo
         )

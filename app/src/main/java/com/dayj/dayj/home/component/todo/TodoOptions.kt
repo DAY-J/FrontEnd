@@ -1,6 +1,7 @@
 package com.dayj.dayj.home.component.todo
 
 import android.util.Log
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -31,12 +32,15 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import com.commandiron.wheel_picker_compose.WheelTimePicker
 import com.commandiron.wheel_picker_compose.core.TimeFormat
+import com.commandiron.wheel_picker_compose.core.WheelPickerDefaults
 import com.dayj.dayj.ext.formatLocalDate
 import com.dayj.dayj.ext.formatLocalDateTime
 import com.dayj.dayj.home.component.TodoSwitch
 import com.dayj.dayj.network.api.response.PlanOptionRequest
+import com.dayj.dayj.ui.theme.CalendarSelectedDateColor
 import com.dayj.dayj.ui.theme.GrayA6
 import com.dayj.dayj.ui.theme.Green12
+import com.dayj.dayj.ui.theme.SelectPlanTagColor
 import com.dayj.dayj.ui.theme.TextBlack
 import com.dayj.dayj.ui.theme.textStyle
 import java.time.LocalDate
@@ -213,7 +217,13 @@ object TodoOptions {
                             .padding(10.dp),
                         expanded = isExpand, onDismissRequest = { isExpand = false }
                     ) {
-                        WheelTimePicker(timeFormat = TimeFormat.AM_PM) { suspendTime ->
+                        WheelTimePicker(
+                            selectorProperties = WheelPickerDefaults.selectorProperties(
+                                color = SelectPlanTagColor,
+                                border = BorderStroke(1.dp, CalendarSelectedDateColor)
+                            ),
+                            timeFormat = TimeFormat.AM_PM
+                        ) { suspendTime ->
                             currentTime = currentTime.toLocalDate().atTime(suspendTime)
                             onChangedPlanOption(
                                 option.copy(
@@ -446,7 +456,7 @@ object TodoOptions {
                         onCheckedChange = {
                             isExpand = !isExpand
 
-                            if(isExpand){
+                            if (isExpand) {
                                 onChangedPlanOption(
                                     option.copy(
                                         planRepeatStartDate = formatLocalDate(startDate),
@@ -454,7 +464,7 @@ object TodoOptions {
                                         planDaysOfWeek = selectDays.map { it.name }
                                     )
                                 )
-                            }else{
+                            } else {
                                 onChangedPlanOption(
                                     option.copy(
                                         planRepeatStartDate = null,
@@ -557,7 +567,7 @@ object TodoOptions {
                 onChangedDate = { changedDate ->
                     endDate = changedDate
                     onChangedPlanOption(
-                        option.copy(planRepeatStartDate = formatLocalDate(endDate))
+                        option.copy(planRepeatEndDate = formatLocalDate(endDate))
                     )
                 },
                 onDismiss = {

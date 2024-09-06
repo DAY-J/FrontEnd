@@ -54,4 +54,9 @@ interface PlanRepository {
         planId: Int,
         body: Map<String, Any?>
     ): Response<Unit>
+
+    suspend fun recommendPlanTag(
+        id: Int,
+        tag: String,
+    ): Response<List<String>>
 }

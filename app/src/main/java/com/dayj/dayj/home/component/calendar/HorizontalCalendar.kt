@@ -23,7 +23,7 @@ fun HorizontalCalendar(
     modifier: Modifier = Modifier,
     selectedDate: LocalDate,
     updateSelectedDate: (LocalDate) -> Unit,
-    onRouteTodo : () -> Unit
+    onRouteTodo : (LocalDate) -> Unit
 ) {
 
     val initialPage =
@@ -53,7 +53,9 @@ fun HorizontalCalendar(
             onAfterMonthClick = {
                 scope.launch { pagerState.scrollToPage(currentPage + 1) }
             },
-            onAddTodo = onRouteTodo
+            onAddTodo = {
+                onRouteTodo(selectedDate)
+            }
         )
         CalendarSheet(pagerState = pagerState, selectedDate = selectedDate, onSelectedDate = updateSelectedDate)
     }

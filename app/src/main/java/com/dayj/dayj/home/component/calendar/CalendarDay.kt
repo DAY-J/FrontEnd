@@ -1,6 +1,7 @@
 package com.dayj.dayj.home.component.calendar
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Box
@@ -12,8 +13,8 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Color.Companion.Black
+import androidx.compose.ui.graphics.Color.Companion.Transparent
 import androidx.compose.ui.graphics.Color.Companion.White
 import androidx.compose.ui.unit.dp
 import com.dayj.dayj.ui.theme.CalendarSelectedDateColor
@@ -41,8 +42,13 @@ fun CalendarDay(
                     }
                 )
                 .background(
-                    color = if (isSelected) CalendarSelectedDateColor else Color.Transparent,
+                    color = if (isSelected) CalendarSelectedDateColor else Transparent,
                     shape = CircleShape
+                )
+                .border(
+                    1.dp,
+                    if (date == LocalDate.now()) CalendarSelectedDateColor else Transparent,
+                    CircleShape
                 ),
             contentAlignment = Alignment.Center
         ) {
