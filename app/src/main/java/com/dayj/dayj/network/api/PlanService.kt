@@ -19,8 +19,8 @@ interface PlanService {
     @POST("/api/app-user/{app_user_id}/plan")
     suspend fun createPlan(
         @Path("app_user_id") id: Int,
-        @Part plan : MultipartBody.Part,
-        @Part planOption : MultipartBody.Part
+        @Part plan: MultipartBody.Part,
+        @Part planOption: MultipartBody.Part
     ): Response<PlanResponse>
 
 
@@ -49,8 +49,8 @@ interface PlanService {
     suspend fun patchPlan(
         @Path("user_id") id: Int,
         @Path("plan_id") planId: Int,
-        @Part plan : MultipartBody.Part,
-        @Part planOption : MultipartBody.Part
+        @Part plan: MultipartBody.Part,
+        @Part planOption: MultipartBody.Part
     ): Response<PlanResponse>
 
     @DELETE("/api/app-user/{user_id}/plan/{plan_id}")
@@ -58,4 +58,11 @@ interface PlanService {
         @Path("user_id") id: Int,
         @Path("plan_id") planId: Int,
     ): Response<Unit>
+
+
+    @GET("/api/app-user/{user_id}/plan/reminder/{tag}")
+    suspend fun recommendPlanTag(
+        @Path("user_id") id: Int,
+        @Path("tag") tag: String,
+    ) : Response<List<String>>
 }

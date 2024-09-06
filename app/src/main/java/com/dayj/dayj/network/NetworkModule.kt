@@ -4,6 +4,7 @@ package com.dayj.dayj.network
 import com.dayj.dayj.network.api.PlanOptionService
 import com.dayj.dayj.network.api.PlanService
 import com.dayj.dayj.network.api.StatisticsService
+import com.dayj.dayj.network.api.adapter.StatisticsDateJsonAdapter
 import com.squareup.moshi.Moshi
 import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
 import dagger.Module
@@ -24,6 +25,7 @@ object NetworkModule {
     @Provides
     fun provideMoshi(): Moshi = Moshi.Builder()
         .add(KotlinJsonAdapterFactory())
+        .add(StatisticsDateJsonAdapter())
         .build()
 
     @Singleton
@@ -31,7 +33,8 @@ object NetworkModule {
     fun provideRetrofit(
         moshi: Moshi
     ): Retrofit {
-        return Retrofit.Builder().baseUrl(BASE_URL)
+
+        return Retrofit.Builder().baseUrl(BASE_URL2)
             .addConverterFactory(MoshiConverterFactory.create(moshi).asLenient())
             .build()
     }
