@@ -25,10 +25,6 @@ class StatisticsViewModel @Inject constructor(
     private val _statisticsViewState = MutableStateFlow(StatisticsViewState())
     val statisticsViewState = _statisticsViewState.asStateFlow()
 
-    init {
-        getStatistics()
-    }
-
     fun updatePlanTag(tag: PlanTag) {
         _statisticsViewState.update {
             it.copy(tag = tag)
@@ -45,7 +41,7 @@ class StatisticsViewModel @Inject constructor(
         getStatistics()
     }
 
-    private fun getStatistics() {
+    fun getStatistics() {
 
         val startDate =
             formatLocalDate(_statisticsViewState.value.startDate, LocalDateFormat.STATISTIC_FORMAT)
@@ -62,7 +58,7 @@ class StatisticsViewModel @Inject constructor(
         ).onEach { result ->
             when (result) {
                 is Result.Fail.Exception -> {
-                    Log.d("결과", result.toString())
+                    Log.d("결과-getStatistics", result.toString())
                     _statisticsViewState.update {
                         it.copy(statistics = emptyList())
                     }

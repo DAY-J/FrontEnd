@@ -14,6 +14,9 @@ data class PlanResponse(
     val planOption: PlanOption
 ) : Parcelable{
 
+    fun isRegisterAlarm() : Boolean =
+        planOption.planStartTime != null && planOption.planEndTime != null && planOption.planAlarmTime != null
+
     fun hasTimeOption(): Boolean =
         planOption.planStartTime != null && planOption.planEndTime != null
 

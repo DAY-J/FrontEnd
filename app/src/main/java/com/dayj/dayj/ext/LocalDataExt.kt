@@ -47,7 +47,7 @@ fun formatLocalDate(localDate: LocalDate, format: String = LocalDateFormat.PLAN_
 }
 
 object LocalDateFormat {
-    const val PLAN_FORMAT = "yyyy-MM-dd'T'HH:mm:ss.SSSSSSSSS"
+    const val PLAN_FORMAT = "yyyy-MM-dd'T'HH:mm:ss"
 
     const val STATISTIC_FORMAT = "yyyy-MM-dd"
 }

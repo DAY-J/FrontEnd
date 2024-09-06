@@ -3,10 +3,12 @@ package com.dayj.dayj.home.addtodo
 import android.widget.Toast
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.OutlinedTextField
@@ -19,6 +21,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
+import androidx.compose.ui.Alignment.Companion.Center
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
@@ -29,6 +32,7 @@ import androidx.navigation.NavController
 import com.dayj.dayj.home.component.PlanTagSelector
 import com.dayj.dayj.home.component.TodoSwitch
 import com.dayj.dayj.home.component.todo.PlanOptionType
+import com.dayj.dayj.home.component.todo.RecommendItem
 import com.dayj.dayj.home.component.todo.TodoOptions
 import com.dayj.dayj.home.component.todo.TodoTitle
 import com.dayj.dayj.network.api.response.PlanOptionRequest
@@ -68,6 +72,7 @@ object TodoScreen {
             onChangedGoal = viewModel::updateGoal,
             planTag = PlanTag.valueOf(state.planRequest.planTag),
             onChangedPlanTag = viewModel::updatePlanTag,
+            recommendTodoList = state.recommendTodoList,
             isPublic = state.planRequest.isPublic,
             onChangedIsPublic = viewModel::updateIsPublic,
             option = state.planOptionRequest,
@@ -102,6 +107,7 @@ object TodoScreen {
             planTag = PlanTag.valueOf(state.planRequest.planTag),
             onChangedPlanTag = viewModel::updatePlanTag,
             isPublic = state.planRequest.isPublic,
+            recommendTodoList = state.recommendTodoList,
             onChangedIsPublic = viewModel::updateIsPublic,
             option = state.planOptionRequest,
             onChangedPlanOption = viewModel::updatePlanOption,
@@ -116,6 +122,7 @@ object TodoScreen {
         goal: String,
         onChangedGoal: (String) -> Unit = {},
         planTag: PlanTag = PlanTag.HEALTH,
+        recommendTodoList: List<String> = emptyList(),
         onChangedPlanTag: (PlanTag) -> Unit = {},
         isPublic: Boolean = true,
         onChangedIsPublic: (Boolean) -> Unit = {},
@@ -178,8 +185,35 @@ object TodoScreen {
                         .padding(start = 8.dp, end = 16.dp),
                     verticalAlignment = Alignment.Top
                 ) {
-                    Column(modifier = Modifier.weight(1f, fill = true)) {
-
+                    Column(
+                        modifier = Modifier.weight(1f, fill = true),
+                        verticalArrangement = Arrangement.Center
+                    ) {
+                        if (isRecommendTodo) {
+                            if (recommendTodoList.isNotEmpty()) {
+                                recommendTodoList.forEachIndexed { index, todo ->
+                                    RecommendItem(
+                                        item = todo,
+                                        isShowDivider = index != recommendTodoList.lastIndex,
+                                        onClick = {
+                                            onChangedGoal(todo)
+                                        }
+                                    )
+                                }
+                            } else {
+                                Box(
+                                    modifier = Modifier
+                                        .fillMaxWidth()
+                                        .height(40.dp),
+                                    contentAlignment = Center
+                                ) {
+                                    Text(
+                                        text = "추천할 할 일이 없습니다.",
+                                        style = textStyle.copy(color = Gray6F),
+                                    )
+                                }
+                            }
+                        }
                     }
 
                     Row(

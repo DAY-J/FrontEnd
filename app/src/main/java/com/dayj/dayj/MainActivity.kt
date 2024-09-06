@@ -40,10 +40,13 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
+import com.dayj.dayj.ext.LocalDateFormat
+import com.dayj.dayj.ext.formatLocalDate
 import com.dayj.dayj.friends.FriendsContainerScreen
 import com.dayj.dayj.home.HomeScreen
 import com.dayj.dayj.home.addtodo.TodoScreen
@@ -58,6 +61,7 @@ import com.dayj.dayj.ui.theme.DayJTheme
 import com.dayj.dayj.util.NavigationUtil
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
+import java.time.LocalDate
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
@@ -95,9 +99,14 @@ class MainActivity : ComponentActivity() {
                                         NavigatorScreens.SearchPosting.name
                                     )
                                 },
-                                navToAddToDo = {
+                                navToAddToDo = { selectDate ->
                                     navController.navigate(
-                                        NavigatorScreens.AddToDo.name
+                                        ScreenType.AddTodo(
+                                            formatLocalDate(
+                                                selectDate,
+                                                LocalDateFormat.STATISTIC_FORMAT
+                                            )
+                                        ).sendRoute
                                     )
                                 },
                                 navToUpdateTodo = { item ->
@@ -132,7 +141,13 @@ class MainActivity : ComponentActivity() {
                             )
                         }
 
-                        composable(NavigatorScreens.AddToDo.name) {
+                        composable(
+                            route = ScreenType.AddTodo().route,
+                            arguments = listOf(
+                                navArgument(ScreenType.AddTodo().selectDate) {
+                                    type = NavType.StringType
+                                }
+                            )) {
                             TodoScreen.Add(navController = navController)
                         }
 
@@ -160,7 +175,7 @@ fun MainScreen(
     navToPostingDetail: (postingId: Int) -> Unit,
     navToWritePosting: () -> Unit,
     navToSearchPosting: () -> Unit,
-    navToAddToDo: () -> Unit,
+    navToAddToDo: (LocalDate) -> Unit,
     navToUpdateTodo: (PlanResponse) -> Unit
 ) {
     val bottomItems = listOf(

@@ -4,6 +4,7 @@ import android.util.Log
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.dayj.dayj.alarm.AlarmCenter
 import com.dayj.dayj.domain.usecase.plan.UpdatePlanUseCase
 import com.dayj.dayj.ext.formatLocalTime
 import com.dayj.dayj.network.api.response.PlanOptionRequest
@@ -24,7 +25,8 @@ import javax.inject.Inject
 @HiltViewModel
 class UpdateTodoViewModel @Inject constructor(
     savedStateHandle: SavedStateHandle,
-    private val updatePlanUseCase: UpdatePlanUseCase
+    private val updatePlanUseCase: UpdatePlanUseCase,
+    private val alarmCenter: AlarmCenter
 ) : ViewModel() {
 
     private val passItem = savedStateHandle.get<PlanResponse>("passItem")
@@ -66,7 +68,7 @@ class UpdateTodoViewModel @Inject constructor(
     }
 
     fun updatePlanOption(planOptionRequest: PlanOptionRequest) {
-        Log.d("결과", planOptionRequest.toString())
+        Log.d("결과-updatePlanOption", planOptionRequest.toString())
         _todoViewState.update {
             it.copy(planOptionRequest = planOptionRequest)
         }
@@ -94,10 +96,14 @@ class UpdateTodoViewModel @Inject constructor(
                 ).onEach { result ->
                     when (result) {
                         is Result.Fail.Exception -> {
-                            Log.d("결과", result.toString())
+                            Log.d("결과-update", planOptionRequest.toString())
                             //todo 확인필요. 성공시 왜
                             //Exception(errorCode=0, message=Expected BEGIN_OBJECT but was BEGIN_ARRAY at path $, payload=) 이렇게 떨어지는지.
                             if (result.errorCode == 0) {
+                                val response = _todoViewState.value.toPlanResponse(id = "1")
+                                if(response.isRegisterAlarm()) {
+                                    alarmCenter.register(response)
+                                }
                                 _todoViewEffect.emit(TodoViewEffect.ShowToast("저장되었습니다."))
                                 _todoViewEffect.emit(TodoViewEffect.CompleteSave)
                             } else {
@@ -107,6 +113,9 @@ class UpdateTodoViewModel @Inject constructor(
 
                         is Result.Success -> {
                             Log.d("결과", result.data.toString())
+                            if(result.data.isRegisterAlarm()) {
+                                alarmCenter.register(result.data)
+                            }
                             _todoViewEffect.emit(TodoViewEffect.ShowToast("저장되었습니다."))
                             _todoViewEffect.emit(TodoViewEffect.CompleteSave)
                         }

@@ -83,6 +83,10 @@ class PlanRepositoryImpl @Inject constructor(
     ): Response<Unit> =
         planOptionService.updatePlanOption(id, planId, body)
 
+    override suspend fun recommendPlanTag(id: Int, tag: String): Response<List<String>> =
+        planService.recommendPlanTag(id, tag)
+
+
     private fun mapToJson(map: Map<String, Any?>): String {
         val moshi = Moshi.Builder()
             .add(KotlinJsonAdapterFactory())

@@ -65,8 +65,7 @@ fun StatisticsResult(
         Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .aspectRatio(1f)
-                .padding(horizontal = 20.dp),
+                .aspectRatio(1f),
             horizontalArrangement = Arrangement.spacedBy(10.dp)
         ) {
             state.statistics.sortedBy { LocalDate.parse(it.date).dayOfWeek.value }.forEach { item ->
@@ -97,7 +96,7 @@ fun StatisticsResult(
                         horizontalAlignment = CenterHorizontally
                     ) {
                         Text(text = LocalDate.parse(item.date).toDayOfWeekName(), style = textStyle)
-                        Text(text = "${item.value}%", style = textStyle)
+                        Text(text = "${item.value}%", style = textStyle.copy(fontSize = 12.sp), maxLines = 1)
                     }
                 }
             }
