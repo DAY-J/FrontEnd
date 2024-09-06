@@ -43,21 +43,21 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import androidx.navigation.navArgument
 import com.dayj.dayj.friends.FriendsContainerScreen
 import com.dayj.dayj.home.HomeScreen
-import com.dayj.dayj.lounge.LoungeTagEnum
+import com.dayj.dayj.home.addtodo.TodoScreen
 import com.dayj.dayj.lounge.lounge.LoungeScreen
 import com.dayj.dayj.lounge.lounge.SearchPostingScreen
-import com.dayj.dayj.lounge.posting.CommentEntity
-import com.dayj.dayj.lounge.posting.LoungePostingEntity
 import com.dayj.dayj.lounge.posting.LoungePostingScreen
 import com.dayj.dayj.lounge.write.PostWritingScreen
+import com.dayj.dayj.network.api.response.PlanResponse
+import com.dayj.dayj.statistics.StatisticsScreen
 import com.dayj.dayj.ui.theme.Background
 import com.dayj.dayj.ui.theme.DayJTheme
-import com.thedeanda.lorem.LoremIpsum
+import com.dayj.dayj.util.NavigationUtil
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
-import kotlin.random.Random
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
@@ -73,7 +73,10 @@ class MainActivity : ComponentActivity() {
                     modifier = Modifier.fillMaxSize(),
                     color = Background
                 ) {
-                    NavHost(navController = navController, startDestination = NavigatorScreens.Main.name) {
+                    NavHost(
+                        navController = navController,
+                        startDestination = NavigatorScreens.Main.name
+                    ) {
                         composable(NavigatorScreens.Main.name) {
                             MainScreen(
                                 navToPostingDetail = {
@@ -90,6 +93,16 @@ class MainActivity : ComponentActivity() {
                                 navToSearchPosting = {
                                     navController.navigate(
                                         NavigatorScreens.SearchPosting.name
+                                    )
+                                },
+                                navToAddToDo = {
+                                    navController.navigate(
+                                        NavigatorScreens.AddToDo.name
+                                    )
+                                },
+                                navToUpdateTodo = { item ->
+                                    navController.navigate(
+                                        ScreenType.UpdateTodo(NavigationUtil.passItem(item)).sendRoute
                                     )
                                 }
                             )
@@ -118,8 +131,22 @@ class MainActivity : ComponentActivity() {
                                 }
                             )
                         }
-                    }
 
+                        composable(NavigatorScreens.AddToDo.name) {
+                            TodoScreen.Add(navController = navController)
+                        }
+
+                        composable(
+                            route = ScreenType.UpdateTodo().route,
+                            arguments = listOf(
+                                navArgument(ScreenType.UpdateTodo().passItem) {
+                                    type = NavigationUtil.assetParamTypeOf<PlanResponse>()
+                                }
+                            )
+                        ) {
+                            TodoScreen.Update(navController = navController)
+                        }
+                    }
                 }
             }
         }
@@ -132,7 +159,9 @@ class MainActivity : ComponentActivity() {
 fun MainScreen(
     navToPostingDetail: (postingId: Int) -> Unit,
     navToWritePosting: () -> Unit,
-    navToSearchPosting: () -> Unit
+    navToSearchPosting: () -> Unit,
+    navToAddToDo: () -> Unit,
+    navToUpdateTodo: (PlanResponse) -> Unit
 ) {
     val bottomItems = listOf(
         BottomNavItem.HOME,
@@ -152,18 +181,19 @@ fun MainScreen(
             state = pagerState,
         ) { page ->
             when (page) {
-                0 -> HomeScreen()
+                0 -> HomeScreen(navToAddToDo = navToAddToDo, navToUpdateTodo = navToUpdateTodo)
                 1 -> StatisticsScreen()
                 2 -> LoungeScreen(
                     navToPostingDetail = navToPostingDetail,
                     navToWritePosting = navToWritePosting,
                     navToSearchPosting = navToSearchPosting
                 )
+
                 3 -> FriendsContainerScreen()
                 4 -> MyPageScreen()
             }
         }
-        
+
         BottomNavigationBar(
             bottomItems = bottomItems,
             selectedTabIdx = pagerState.targetPage,
@@ -178,7 +208,11 @@ fun MainScreen(
 
 
 @Composable
-fun BoxScope.BottomNavigationBar(bottomItems: List<BottomNavItem>, selectedTabIdx: Int, onClickTab: (Int) -> Unit) {
+fun BoxScope.BottomNavigationBar(
+    bottomItems: List<BottomNavItem>,
+    selectedTabIdx: Int,
+    onClickTab: (Int) -> Unit
+) {
     val navWidth = LocalConfiguration.current.screenWidthDp - 40
 
     Box(
@@ -229,7 +263,7 @@ fun BottomNavTabItem(
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         Image(
-            painter = painterResource(id = if(selected) item.selectedIcon else item.unSelectedIcon),
+            painter = painterResource(id = if (selected) item.selectedIcon else item.unSelectedIcon),
             contentDescription = ""
         )
         Spacer(modifier = Modifier.padding(top = 5.dp))
@@ -238,7 +272,7 @@ fun BottomNavTabItem(
             style = TextStyle(
                 fontWeight = FontWeight.Medium,
                 fontSize = 10.sp,
-                color = if(selected) Color.Black else Gray
+                color = if (selected) Color.Black else Gray
             )
         )
     }
