@@ -34,7 +34,7 @@ object NetworkModule {
         moshi: Moshi
     ): Retrofit {
 
-        return Retrofit.Builder().baseUrl(BASE_URL2)
+        return Retrofit.Builder().baseUrl(BASE_URL)
             .addConverterFactory(MoshiConverterFactory.create(moshi).asLenient())
             .build()
     }

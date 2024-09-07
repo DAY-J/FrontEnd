@@ -340,7 +340,13 @@ object TodoOptions {
                                 expanded = isShowStartTimePicker,
                                 onDismissRequest = { isShowStartTimePicker = false }
                             ) {
-                                WheelTimePicker(timeFormat = TimeFormat.AM_PM) { suspendTime ->
+                                WheelTimePicker(
+                                    selectorProperties = WheelPickerDefaults.selectorProperties(
+                                        color = SelectPlanTagColor,
+                                        border = BorderStroke(1.dp, CalendarSelectedDateColor)
+                                    ),
+                                    timeFormat = TimeFormat.AM_PM
+                                ) { suspendTime ->
                                     startTime = startTime.toLocalDate().atTime(suspendTime)
                                     onChangedPlanOption(
                                         option.copy(planStartTime = formatLocalDateTime(startTime))
@@ -374,7 +380,13 @@ object TodoOptions {
                                 expanded = isShowEndTimePicker,
                                 onDismissRequest = { isShowEndTimePicker = false }
                             ) {
-                                WheelTimePicker(timeFormat = TimeFormat.AM_PM) { suspendTime ->
+                                WheelTimePicker(
+                                    selectorProperties = WheelPickerDefaults.selectorProperties(
+                                        color = SelectPlanTagColor,
+                                        border = BorderStroke(1.dp, CalendarSelectedDateColor)
+                                    ),
+                                    timeFormat = TimeFormat.AM_PM
+                                ) { suspendTime ->
                                     endTime = endTime.toLocalDate().atTime(suspendTime)
                                     onChangedPlanOption(
                                         option.copy(planEndTime = formatLocalDateTime(endTime))
