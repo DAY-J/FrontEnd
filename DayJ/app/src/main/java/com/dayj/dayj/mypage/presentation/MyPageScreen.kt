@@ -135,12 +135,6 @@ fun MyPageScreen(
                         MyPageButton(buttonText = "연결된 계정") {
                             navToLinkedAccount()
                         }
-
-                        MyPageButtonDivider()
-
-                        MyPageButton(buttonText = "비밀번호 변경") {
-
-                        }
                     }
                 }
 
@@ -204,11 +198,6 @@ fun MyPageScreen(
                             )
                         }
 
-                        MyPageButtonDivider()
-
-                        MyPageButton(buttonText = "메뉴별 푸시 알림") {
-
-                        }
                     }
                 }
 
