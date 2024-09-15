@@ -5,6 +5,8 @@ enum class NavigatorScreens {
     PostingDetail,
     WritePosting,
     SearchPosting,
+    ChangeNickName,
+    LinkedAccount
 }
 
 interface ScreenNavigation {

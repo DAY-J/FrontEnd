@@ -47,13 +47,16 @@ import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import com.dayj.dayj.ext.LocalDateFormat
 import com.dayj.dayj.ext.formatLocalDate
-import com.dayj.dayj.friends.FriendsContainerScreen
+import com.dayj.dayj.friends.domain.entity.UserEntity
+import com.dayj.dayj.friends.presentation.FriendsContainerScreen
 import com.dayj.dayj.home.HomeScreen
 import com.dayj.dayj.home.addtodo.TodoScreen
-import com.dayj.dayj.lounge.lounge.LoungeScreen
-import com.dayj.dayj.lounge.lounge.SearchPostingScreen
-import com.dayj.dayj.lounge.posting.LoungePostingScreen
-import com.dayj.dayj.lounge.write.PostWritingScreen
+import com.dayj.dayj.lounge.domain.entity.LoungePostingEntity
+import com.dayj.dayj.lounge.presentation.lounge.LoungeScreen
+import com.dayj.dayj.lounge.presentation.lounge.SearchPostingScreen
+import com.dayj.dayj.lounge.presentation.posting.LoungePostingScreen
+import com.dayj.dayj.lounge.presentation.write.PostWritingScreen
+import com.dayj.dayj.mypage.presentation.LinkedAccountScreen
 import com.dayj.dayj.network.api.response.PlanResponse
 import com.dayj.dayj.statistics.StatisticsScreen
 import com.dayj.dayj.ui.theme.Background
@@ -65,6 +68,8 @@ import java.time.LocalDate
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
+    val userEntityKey = "USER_ENTITY_KEY"
+    val selectedPostingKey = "SELECTED_POSTING_KEY"
 
     @RequiresApi(Build.VERSION_CODES.O)
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -84,7 +89,7 @@ class MainActivity : ComponentActivity() {
                         composable(NavigatorScreens.Main.name) {
                             MainScreen(
                                 navToPostingDetail = {
-                                    postingId = it
+                                    navController.currentBackStackEntry?.savedStateHandle?.set(selectedPostingKey, it)
                                     navController.navigate(
                                         NavigatorScreens.PostingDetail.name,
                                     )
@@ -113,12 +118,25 @@ class MainActivity : ComponentActivity() {
                                     navController.navigate(
                                         ScreenType.UpdateTodo(NavigationUtil.passItem(item)).sendRoute
                                     )
+                                },
+                                navToChangeNickName = { userEntity ->
+                                    navController.currentBackStackEntry?.savedStateHandle?.set(userEntityKey, userEntity)
+                                    navController.navigate(
+                                        NavigatorScreens.ChangeNickName.name,
+                                    )
+                                },
+                                navToLinkedAccount = {
+                                    navController.navigate(
+                                        NavigatorScreens.LinkedAccount.name,
+                                    )
                                 }
                             )
                         }
+
                         composable(NavigatorScreens.PostingDetail.name) {
+                            val posting = navController.previousBackStackEntry?.savedStateHandle?.get<LoungePostingEntity>(selectedPostingKey)
                             LoungePostingScreen(
-                                postingId = postingId,
+                                loungePostingEntity = posting,
                                 navHostController = navController
                             )
                         }
@@ -133,7 +151,7 @@ class MainActivity : ComponentActivity() {
                             SearchPostingScreen(
                                 navHostController = navController,
                                 navToPostingDetail = {
-                                    postingId = it
+                                    navController.currentBackStackEntry?.savedStateHandle?.set(selectedPostingKey, it)
                                     navController.navigate(
                                         NavigatorScreens.PostingDetail.name,
                                     )
@@ -161,6 +179,14 @@ class MainActivity : ComponentActivity() {
                         ) {
                             TodoScreen.Update(navController = navController)
                         }
+
+                        composable(NavigatorScreens.LinkedAccount.name) {
+                            LinkedAccountScreen(
+                                onClickBack =  {
+                                    navController.popBackStack()
+                                }
+                            )
+                        }
                     }
                 }
             }
@@ -172,12 +198,14 @@ class MainActivity : ComponentActivity() {
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun MainScreen(
-    navToPostingDetail: (postingId: Int) -> Unit,
+    navToPostingDetail: (posting: LoungePostingEntity) -> Unit,
     navToWritePosting: () -> Unit,
     navToSearchPosting: () -> Unit,
     navToAddToDo: (LocalDate) -> Unit,
-    navToUpdateTodo: (PlanResponse) -> Unit
-) {
+    navToUpdateTodo: (PlanResponse) -> Unit,
+    navToLinkedAccount: () -> Unit,
+    navToChangeNickName: (UserEntity) -> Unit,
+    ) {
     val bottomItems = listOf(
         BottomNavItem.HOME,
         BottomNavItem.STATISTICS,
@@ -203,9 +231,11 @@ fun MainScreen(
                     navToWritePosting = navToWritePosting,
                     navToSearchPosting = navToSearchPosting
                 )
-
                 3 -> FriendsContainerScreen()
-                4 -> MyPageScreen()
+                4 -> MyPageScreen(
+                    navToChangeNickName = navToChangeNickName,
+                    navToLinkedAccount = navToLinkedAccount
+                )
             }
         }
 

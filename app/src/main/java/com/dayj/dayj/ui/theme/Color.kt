@@ -19,12 +19,14 @@ val Gray6F = Color(0XFF6f6f6f)
 val GrayE3 = Color(0XFFe3e2e0)
 val GrayC0 = Color(0XFFC0C0C0)
 val GrayA6 = Color(0XFFa6a6a6)
+val GrayEF = Color(0XFFEFEEED)
 
 val GrayCB = Color(0XFFcbc6c1)
 val Black3A = Color(0XFF3a3a3a)
 val GrayDDD = Color(0XFFdddbd8)
 val GrayAFAF = Color(0XFFafafaf)
 val Gray9A = Color(0XFF9a9a9a)
+val Gray9C9 = Color(0XFF9c9c9c)
 
 
 val TextBlack = Color(0XFF2a2a2a)

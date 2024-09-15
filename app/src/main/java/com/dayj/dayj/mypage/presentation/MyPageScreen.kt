@@ -1,4 +1,4 @@
-package com.dayj.dayj
+package com.dayj.dayj.mypage.presentation
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -34,6 +34,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.dayj.dayj.R
 import com.dayj.dayj.friends.domain.entity.UserEntity
 import com.dayj.dayj.ui.theme.Background
 import com.dayj.dayj.ui.theme.Black3A

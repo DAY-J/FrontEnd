@@ -19,9 +19,9 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.dayj.dayj.R
+import com.dayj.dayj.friends.domain.entity.UserEntity
 import com.dayj.dayj.ui.theme.Black2A
 import com.dayj.dayj.ui.theme.Green12
-import com.dayj.dayj.friends.UserEntity
 
 
 @Composable
