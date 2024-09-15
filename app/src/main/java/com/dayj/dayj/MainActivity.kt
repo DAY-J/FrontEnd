@@ -56,6 +56,7 @@ import com.dayj.dayj.lounge.presentation.lounge.LoungeScreen
 import com.dayj.dayj.lounge.presentation.lounge.SearchPostingScreen
 import com.dayj.dayj.lounge.presentation.posting.LoungePostingScreen
 import com.dayj.dayj.lounge.presentation.write.PostWritingScreen
+import com.dayj.dayj.mypage.presentation.ChangeNickNameScreen
 import com.dayj.dayj.mypage.presentation.LinkedAccountScreen
 import com.dayj.dayj.network.api.response.PlanResponse
 import com.dayj.dayj.statistics.StatisticsScreen
@@ -182,6 +183,15 @@ class MainActivity : ComponentActivity() {
 
                         composable(NavigatorScreens.LinkedAccount.name) {
                             LinkedAccountScreen(
+                                onClickBack =  {
+                                    navController.popBackStack()
+                                }
+                            )
+                        }
+                        composable(NavigatorScreens.ChangeNickName.name) {
+                            val userEntity = navController.previousBackStackEntry?.savedStateHandle?.get<UserEntity>(userEntityKey)
+                            ChangeNickNameScreen(
+                                userEntity = userEntity,
                                 onClickBack =  {
                                     navController.popBackStack()
                                 }
