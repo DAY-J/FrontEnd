@@ -102,7 +102,7 @@ object TodoScreen {
             }
         }
 
-        BaseTodoScreen("할일 수정하기", goal = state.planRequest.goal,
+        BaseTodoScreen("할 일 수정하기", goal = state.planRequest.goal,
             onChangedGoal = viewModel::updateGoal,
             planTag = PlanTag.valueOf(state.planRequest.planTag),
             onChangedPlanTag = viewModel::updatePlanTag,
