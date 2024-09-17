@@ -90,7 +90,7 @@ fun PlanTagItem(
 
     Box(
         modifier = Modifier
-            .width(80.dp)
+            .width(60.dp)
             .height(30.dp)
             .then(modifier)
             .clickable { onItemClick(item) },
