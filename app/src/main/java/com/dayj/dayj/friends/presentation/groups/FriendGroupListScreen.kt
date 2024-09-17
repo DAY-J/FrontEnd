@@ -39,6 +39,7 @@ fun GroupListScreen(
 ) {
     var isCreateGroupDialogOpen = remember{ mutableStateOf(false) }
     val groupList = groupListViewModel.groupList.collectAsState().value
+    groupListViewModel.fetchAllGroups()
 
     Box(
         modifier = Modifier

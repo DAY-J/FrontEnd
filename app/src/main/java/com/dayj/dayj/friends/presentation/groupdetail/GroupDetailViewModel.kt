@@ -3,6 +3,7 @@ package com.dayj.dayj.friends.presentation.groupdetail
 import androidx.compose.ui.tooling.preview.datasource.LoremIpsum
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.dayj.dayj.data.PreferenceManager
 import com.dayj.dayj.friends.domain.entity.GroupParticipantEntity
 import com.dayj.dayj.friends.domain.entity.FriendsGroupEntity
 import com.dayj.dayj.friends.domain.entity.GoalByParicipantEntity
@@ -11,13 +12,15 @@ import com.dayj.dayj.friends.domain.repository.FriendsRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 import kotlin.random.Random
 
 @HiltViewModel
 class GroupDetailViewModel @Inject constructor(
-    private val friendsRepository: FriendsRepository
+    private val friendsRepository: FriendsRepository,
+    private val preferenceManager: PreferenceManager
 ): ViewModel() {
     private val _groupId = MutableStateFlow<Int>(-1)
     val groupId = _groupId.asStateFlow()
@@ -96,6 +99,17 @@ class GroupDetailViewModel @Inject constructor(
                 groupId = groupId.value
             ).collect {
                 updateGroupInfo(it.copy(groupId = groupId.value))
+            }
+        }
+    }
+
+    fun exitGroup(resultListener: () -> Unit) {
+        viewModelScope.launch {
+            friendsRepository.exitGroup(
+                userId = preferenceManager.getUserId(),
+                groupId = groupId.value
+            ).collect {
+                resultListener()
             }
         }
     }

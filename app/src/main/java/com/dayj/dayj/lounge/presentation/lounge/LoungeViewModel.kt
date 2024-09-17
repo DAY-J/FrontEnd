@@ -37,6 +37,10 @@ class LoungeViewModel @Inject constructor(
     private val _sort = MutableStateFlow(0)
     val sort = _sort.asStateFlow()
 
+    init {
+        getAllPostings()
+    }
+
     fun changeSort(sort: Int) {
         _sort.value = sort
         _postings.value = when (sort) {
@@ -60,6 +64,13 @@ class LoungeViewModel @Inject constructor(
 
     fun changeSelectedTag(tag: LoungeTagEnum) {
         _selectedTag.value = tag
+        if(tag == LoungeTagEnum.ALL) {
+            _filteredLoungeItems.value = postings.value
+        } else {
+            _filteredLoungeItems.value = postings.value.toMutableList().filter {
+                it.tag == tag
+            }
+        }
     }
 
     fun updateSearchQuery(query: String) {
@@ -88,6 +99,7 @@ class LoungeViewModel @Inject constructor(
                 _postings.value = it.sortedByDescending {
                     it.createdDate
                 }
+                changeSelectedTag(selectedTag.value)
             }
         }
     }

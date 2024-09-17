@@ -96,4 +96,9 @@ interface ApiService {
         @Body requestComment: RequestCommentModel
     ): Response<ResponsePosting.CommentModel>
 
+    @DELETE("app-user/{app_user_id}/group-member/{group_id}")
+    suspend fun exitGroup(
+        @Path("app_user_id") appUserId: Int,
+        @Path("group_id") groupId: Int
+    ): Response<Unit>
 }

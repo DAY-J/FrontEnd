@@ -43,13 +43,9 @@ fun LoungeScreen(
     navToSearchPosting: () -> Unit
 ) {
     val selectedLoungeTag = loungeViewModel.selectedTag.collectAsState().value
-    val loungeItems = loungeViewModel.postings.collectAsState().value
+    val loungeItems = loungeViewModel.filteredLoungeItems.collectAsState().value
     val sort = loungeViewModel.sort.collectAsState().value
     val sortDialogOpened = remember { mutableStateOf(false) }
-
-    LaunchedEffect(key1 = Unit) {
-        loungeViewModel.getAllPostings()
-    }
 
     Box(
         modifier = Modifier

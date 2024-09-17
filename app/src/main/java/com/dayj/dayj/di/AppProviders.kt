@@ -16,6 +16,9 @@ import com.dayj.dayj.network.ApiService
 import com.dayj.dayj.network.api.PlanOptionService
 import com.dayj.dayj.network.api.PlanService
 import com.dayj.dayj.network.api.StatisticsService
+import com.dayj.dayj.network.api.adapter.StatisticsDateJsonAdapter
+import com.squareup.moshi.Moshi
+import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -25,16 +28,24 @@ import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
+import retrofit2.converter.moshi.MoshiConverterFactory
 import java.util.concurrent.TimeUnit
 import javax.inject.Singleton
 
 @Module
 @InstallIn(SingletonComponent::class)
 object AppProviders {
-
+    private const val BASE_URL = "http://35.216.13.139:8080"
     private val loggingInterceptor = HttpLoggingInterceptor(HttpLoggingInterceptor.Logger.DEFAULT).apply {
         this.level = HttpLoggingInterceptor.Level.BODY
     }
+
+    @Singleton
+    @Provides
+    fun provideMoshi(): Moshi = Moshi.Builder()
+        .add(KotlinJsonAdapterFactory())
+        .add(StatisticsDateJsonAdapter())
+        .build()
 
     @Provides
     @Singleton
@@ -47,35 +58,48 @@ object AppProviders {
             .build()
 
 
-    @Provides
     @Singleton
-    fun provideUnAuthRetrofit(okHttpClient: OkHttpClient): Retrofit =
-        Retrofit.Builder()
-            .baseUrl("http://35.216.13.139:8080/api/")
-            .client(okHttpClient)
-            .addConverterFactory(GsonConverterFactory.create())
+    @Provides
+    @EtcRetrofit
+    fun provideEtcRetrofit(
+        moshi: Moshi
+    ): Retrofit {
+        return Retrofit.Builder().baseUrl(BASE_URL)
+            .addConverterFactory(MoshiConverterFactory.create(moshi).asLenient())
             .build()
+    }
+
+    @Singleton
+    @Provides
+    @OriginalRetrofit
+    fun provideOriginalRetrofit(
+        okHttpClient: OkHttpClient
+    ): Retrofit = Retrofit.Builder()
+        .baseUrl("http://35.216.13.139:8080/api/")
+        .client(okHttpClient)
+        .addConverterFactory(GsonConverterFactory.create())
+        .build()
 
     @Provides
     @Singleton
     fun provideApiService(
-        retrofit: Retrofit
+        @OriginalRetrofit retrofit: Retrofit
     ): ApiService = retrofit.create(ApiService::class.java)
 
 
     @Singleton
     @Provides
-    fun providePlanService(retrofit: Retrofit): PlanService =
+    fun providePlanService(@EtcRetrofit retrofit: Retrofit): PlanService =
         retrofit.create(PlanService::class.java)
 
     @Singleton
     @Provides
-    fun providePlanOptionService(retrofit: Retrofit): PlanOptionService =
+    fun providePlanOptionService(@EtcRetrofit retrofit: Retrofit): PlanOptionService =
         retrofit.create(PlanOptionService::class.java)
 
     @Singleton
     @Provides
-    fun provideStatisticsService(retrofit: Retrofit): StatisticsService =
+    fun provideStatisticsService(@EtcRetrofit retrofit: Retrofit): StatisticsService =
         retrofit.create(StatisticsService::class.java)
 
     @Provides

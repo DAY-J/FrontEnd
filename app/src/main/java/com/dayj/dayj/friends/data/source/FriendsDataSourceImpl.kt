@@ -51,4 +51,12 @@ class FriendsDataSourceImpl @Inject constructor(
         )
         emit(response.isSuccessful)
     }
+
+    override suspend fun exitGroup(userId: Int, groupId: Int): Flow<Boolean> = flow {
+        val response = apiService.exitGroup(
+            appUserId = userId,
+            groupId = groupId
+        )
+        emit(response.isSuccessful)
+    }
 }

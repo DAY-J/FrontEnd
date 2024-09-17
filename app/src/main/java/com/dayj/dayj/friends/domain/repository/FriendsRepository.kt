@@ -23,4 +23,9 @@ interface FriendsRepository {
         groupGoal: String,
         groupName: String
     ): Flow<Boolean>
+
+    suspend fun exitGroup(
+        userId: Int,
+        groupId: Int
+    ): Flow<Boolean>
 }

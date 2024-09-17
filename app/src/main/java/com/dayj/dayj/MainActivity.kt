@@ -45,6 +45,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
+import com.dayj.dayj.data.PreferenceManager
 import com.dayj.dayj.ext.LocalDateFormat
 import com.dayj.dayj.ext.formatLocalDate
 import com.dayj.dayj.friends.domain.entity.UserEntity
@@ -66,11 +67,13 @@ import com.dayj.dayj.util.NavigationUtil
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 import java.time.LocalDate
+import javax.inject.Inject
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
     val userEntityKey = "USER_ENTITY_KEY"
     val selectedPostingKey = "SELECTED_POSTING_KEY"
+    @Inject lateinit var userPreferenceManager: PreferenceManager
 
     @RequiresApi(Build.VERSION_CODES.O)
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -78,6 +81,10 @@ class MainActivity : ComponentActivity() {
         setContent {
             val navController = rememberNavController()
             var postingId = -1
+
+
+            userPreferenceManager.putUserId(2)
+
             DayJTheme {
                 Surface(
                     modifier = Modifier.fillMaxSize(),

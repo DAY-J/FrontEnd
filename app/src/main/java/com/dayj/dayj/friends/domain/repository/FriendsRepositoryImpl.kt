@@ -49,30 +49,38 @@ class FriendsRepositoryImpl @Inject constructor(
         )
     }
 
+    override suspend fun exitGroup(userId: Int, groupId: Int): Flow<Boolean> {
+        return friendsDataSource.exitGroup(userId, groupId)
+    }
+
     fun ResponseFriendGroups.toEntity(): FriendsGroupEntity {
         return FriendsGroupEntity(
             groupId = id,
             groupName = groupName ?: "",
-            participantsCount = achievementList.size,
+            participantsCount = groupMemberList?.size ?: 0,
             groupGoal = groupGoal ?: "",
-            participants = achievementList.map { achievement ->
-                val member = groupMemberList.find { it.appUserId == achievement.appUserId }
-                GroupParticipantEntity(
-                    user = UserEntity(
-                        userName = achievement.nickname,
-                        userId = achievement.appUserId
-                    ),
-                    achievementRate = achievement.achievementRate?.achievementRate ?: 0,
-                    plans = member?.groupMemberPlan?.map { plan ->
-                        GoalByParicipantEntity(
-                            userId = member.appUserId,
-                            planId = plan.id,
-                            goalTitle = plan.goal,
-                            achieved = plan.complete
-                        )
-                    } ?: listOf()
-                )
-            }
+            participants = groupMemberList?.map { member ->
+                val member = groupMemberList.find { it.appUserId == member.appUserId }
+                if(member != null) {
+                    GroupParticipantEntity(
+                        user = UserEntity(
+                            userName = member.nickname,
+                            userId = member.appUserId
+                        ),
+                        achievementRate = member.achievementRate?.achievementRate ?: 0,
+                        plans = member.groupMemberPlan?.map { plan ->
+                            GoalByParicipantEntity(
+                                userId = member.appUserId,
+                                planId = plan.id,
+                                goalTitle = plan.goal,
+                                achieved = plan.complete
+                            )
+                        } ?: listOf()
+                    )
+                } else {
+                    null
+                }
+            }?.filterNotNull() ?: listOf()
         )
     }
 }

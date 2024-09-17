@@ -18,10 +18,6 @@ class GroupListViewModel @Inject constructor(
     val groupList = _groupList.asStateFlow()
 
 
-    init {
-        fetchAllGroups()
-    }
-
     fun addGroup(group: FriendsGroupEntity) {
         groupList.value.toMutableList().also {
             it.add(group)
@@ -33,7 +29,7 @@ class GroupListViewModel @Inject constructor(
     /**
      * 친구 그룹 가져오기 [Remote]
      * **/
-    private fun fetchAllGroups() {
+    fun fetchAllGroups() {
         viewModelScope.launch {
             friendsRepository.getAllGroups().collect {
                 _groupList.value = it

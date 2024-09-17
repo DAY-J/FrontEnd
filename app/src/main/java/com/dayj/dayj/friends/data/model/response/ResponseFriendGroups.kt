@@ -5,8 +5,8 @@ data class ResponseFriendGroups(
     val groupGoal: String? = "",
     val groupName: String? ="",
     val createdAt: String? ="",
-    val achievementList: List<AchievementInfo> = listOf(),
-    val groupMemberList: List<ParticipantInfo> = listOf()
+    val achievementList: List<AchievementInfo>? = listOf(),
+    val groupMemberList: List<ParticipantInfo>? = listOf()
 ) {
     data class AchievementInfo(
         val id: Int,

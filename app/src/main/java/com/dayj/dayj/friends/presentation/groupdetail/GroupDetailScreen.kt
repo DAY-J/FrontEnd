@@ -148,9 +148,11 @@ fun GroupDetailScreen(
                     exitGroupDialogOpened.value = false
                 },
                 onClickExit = {
-                    exitGroupDialogOpened.value = false
-                    Toast.makeText(context, "${viewModel.groupName.value} 그룹을 나갔습니다.", Toast.LENGTH_SHORT).show()
-                    onClickBack()
+                    viewModel.exitGroup {
+                        exitGroupDialogOpened.value = false
+                        Toast.makeText(context, "${viewModel.groupName.value} 그룹을 나갔습니다.", Toast.LENGTH_SHORT).show()
+                        onClickBack()
+                    }
                 }
             )
         }
@@ -162,6 +164,7 @@ fun GroupDetailScreen(
                     editGroupGoalDialogOpened.value = false
                 },
                 onClickComplete = { groupGoal ->
+
                     editGroupGoalDialogOpened.value = false
                     viewModel.editGroupGoal(groupGoal = groupGoal)
                     Toast.makeText(context, "그룹 공동 목표를 수정하였습니다.", Toast.LENGTH_SHORT).show()
