@@ -67,7 +67,7 @@ object TodoScreen {
         }
 
         BaseTodoScreen(
-            "할일 추가하기",
+            "할 일 추가하기",
             goal = state.planRequest.goal,
             onChangedGoal = viewModel::updateGoal,
             planTag = PlanTag.valueOf(state.planRequest.planTag),
@@ -102,7 +102,7 @@ object TodoScreen {
             }
         }
 
-        BaseTodoScreen("할일 수정하기", goal = state.planRequest.goal,
+        BaseTodoScreen("할 일 수정하기", goal = state.planRequest.goal,
             onChangedGoal = viewModel::updateGoal,
             planTag = PlanTag.valueOf(state.planRequest.planTag),
             onChangedPlanTag = viewModel::updatePlanTag,
@@ -208,7 +208,7 @@ object TodoScreen {
                                     contentAlignment = Center
                                 ) {
                                     Text(
-                                        text = "추천할 할 일이 없습니다.",
+                                        text = "리마인더가 없습니다.",
                                         style = textStyle.copy(color = Gray6F),
                                     )
                                 }
@@ -221,7 +221,7 @@ object TodoScreen {
                         horizontalArrangement = Arrangement.spacedBy(10.dp)
                     ) {
                         Text(
-                            text = "할 일 추천",
+                            text = "리마인더",
                             style = textStyle.copy(fontSize = 12.sp, color = Gray6F)
                         )
                         TodoSwitch(
