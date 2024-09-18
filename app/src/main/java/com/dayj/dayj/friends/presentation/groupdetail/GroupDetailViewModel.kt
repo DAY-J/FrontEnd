@@ -1,5 +1,6 @@
 package com.dayj.dayj.friends.presentation.groupdetail
 
+import android.util.Log
 import androidx.compose.ui.tooling.preview.datasource.LoremIpsum
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope

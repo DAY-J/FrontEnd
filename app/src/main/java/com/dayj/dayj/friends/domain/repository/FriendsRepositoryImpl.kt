@@ -68,7 +68,7 @@ class FriendsRepositoryImpl @Inject constructor(
                             userId = member.appUserId
                         ),
                         achievementRate = member.achievementRate?.achievementRate ?: 0,
-                        plans = member.groupMemberPlan?.map { plan ->
+                        plans = member.groupMemberPlans?.map { plan ->
                             GoalByParicipantEntity(
                                 userId = member.appUserId,
                                 planId = plan.id,

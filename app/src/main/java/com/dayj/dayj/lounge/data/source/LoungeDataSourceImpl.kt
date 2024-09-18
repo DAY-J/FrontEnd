@@ -99,4 +99,9 @@ class LoungeDataSourceImpl @Inject constructor(
             emit(null)
         }
     }
+
+    override suspend fun likePosting(postingId: Int): Flow<Boolean> = flow {
+        val response = apiService.likePosting(postingId)
+        emit(response.isSuccessful)
+    }
 }

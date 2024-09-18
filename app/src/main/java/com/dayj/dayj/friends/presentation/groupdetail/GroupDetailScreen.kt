@@ -118,7 +118,11 @@ fun GroupDetailScreen(
                 if(goals.flatten().isNotEmpty() && participants.isNotEmpty()) {
                     items(
                         items = goals.find {
-                            it.first().userId == participants.get(selectedFriendIdx).userId
+                            if(it.isNotEmpty()) {
+                                it.first().userId == participants.get(selectedFriendIdx).userId
+                            } else {
+                                false
+                            }
                         } ?: emptyList(),
                         itemContent = {
                             GoalByFriendItem(it)
@@ -143,7 +147,7 @@ fun GroupDetailScreen(
 
         if(exitGroupDialogOpened.value) {
             ExitGroupDialog(
-                groupName = "그룹명1",
+                groupName = viewModel.groupName.value,
                 onDismiss = {
                     exitGroupDialogOpened.value = false
                 },
@@ -426,11 +430,6 @@ fun FriendListView(
 
             Spacer(modifier = Modifier.weight(1f))
 
-            Image(
-                modifier = Modifier.clickable {  },
-                painter = painterResource(id = R.drawable.bounding_box),
-                contentDescription = ""
-            )
         }
 
         Spacer(modifier = Modifier.padding(top = 15.dp))

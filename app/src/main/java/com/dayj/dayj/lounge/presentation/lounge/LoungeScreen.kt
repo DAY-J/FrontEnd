@@ -47,6 +47,11 @@ fun LoungeScreen(
     val sort = loungeViewModel.sort.collectAsState().value
     val sortDialogOpened = remember { mutableStateOf(false) }
 
+    LaunchedEffect(key1 = Unit, block =  {
+        loungeViewModel.getAllPostings()
+
+    })
+
     Box(
         modifier = Modifier
             .fillMaxSize()

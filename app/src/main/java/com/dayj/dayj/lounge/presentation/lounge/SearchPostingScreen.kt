@@ -18,6 +18,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -46,6 +47,10 @@ fun SearchPostingScreen(
     val keyboardController = LocalSoftwareKeyboardController.current
     val searchQuery = loungeViewModel.searchQuery.collectAsState().value
     val filteredPostings =  loungeViewModel.filteredLoungeItems.collectAsState().value
+
+    LaunchedEffect(key1 = Unit, block = {
+        loungeViewModel.getAllPostings()
+    })
 
     Box(
         modifier = Modifier

@@ -35,7 +35,7 @@ import javax.inject.Singleton
 @Module
 @InstallIn(SingletonComponent::class)
 object AppProviders {
-    private const val BASE_URL = "http://35.216.13.139:8080"
+    private const val BASE_URL = "http://35.216.13.139:8080/api/"
     private val loggingInterceptor = HttpLoggingInterceptor(HttpLoggingInterceptor.Logger.DEFAULT).apply {
         this.level = HttpLoggingInterceptor.Level.BODY
     }

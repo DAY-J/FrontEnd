@@ -13,4 +13,5 @@ interface LoungeDataSource {
     suspend fun writeChildComment(postingId: Int, userId: Int, commentId: Int, requestCommentModel: RequestCommentModel): Flow<ResponsePosting.CommentModel?>
     suspend fun deleteComment(postingId: Int, commentId: Int): Flow<Boolean>
     suspend fun editComment(postingId: Int, commentId: Int, requestCommentModel: RequestCommentModel): Flow<ResponsePosting.CommentModel?>
+    suspend fun likePosting(postingId: Int): Flow<Boolean>
 }

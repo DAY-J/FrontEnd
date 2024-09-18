@@ -82,8 +82,8 @@ class MainActivity : ComponentActivity() {
             val navController = rememberNavController()
             var postingId = -1
 
-
-            userPreferenceManager.putUserId(2)
+            userPreferenceManager.putUserId(1)
+            userPreferenceManager.putUserName("이신형")
 
             DayJTheme {
                 Surface(

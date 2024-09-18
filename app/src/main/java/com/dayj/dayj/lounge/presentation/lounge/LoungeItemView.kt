@@ -1,5 +1,6 @@
 package com.dayj.dayj.lounge.presentation.lounge
 
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
@@ -16,9 +17,11 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.dayj.dayj.R
 import com.dayj.dayj.lounge.domain.entity.LoungePostingEntity
 import com.dayj.dayj.ui.theme.Black3A
 import com.dayj.dayj.ui.theme.Gray6F
@@ -84,6 +87,37 @@ fun LoungeItemView(
                 modifier = Modifier,
                 verticalAlignment = Alignment.CenterVertically
             ) {
+                Image(
+                    modifier = Modifier,
+                    painter = painterResource(id = R.drawable.thumb_up),
+                    contentDescription = ""
+                )
+
+                Text(
+                    modifier = Modifier
+                        .padding(start = 3.dp),
+                    text = loungePostingEntity.likeCount.toString(),
+                    fontWeight = FontWeight.Medium,
+                    fontSize = 12.sp,
+                    color = Black3A
+                )
+
+                Image(
+                    modifier = Modifier
+                        .padding(start = 3.dp),
+                    painter = painterResource(id = R.drawable.ic_comment),
+                    contentDescription = ""
+                )
+
+                Text(
+                    modifier = Modifier
+                        .padding(start = 3.dp),
+                    text = loungePostingEntity.comments.size.toString(),
+                    fontWeight = FontWeight.Medium,
+                    fontSize = 12.sp,
+                    color = Black3A
+                )
+
                 Spacer(modifier = Modifier.weight(1f))
                 Text(
                     modifier = Modifier

@@ -101,4 +101,9 @@ interface ApiService {
         @Path("app_user_id") appUserId: Int,
         @Path("group_id") groupId: Int
     ): Response<Unit>
+
+    @PATCH("post/{post_id}/like")
+    suspend fun likePosting(
+        @Path("post_id") postId: Int
+    ): Response<Unit>
 }

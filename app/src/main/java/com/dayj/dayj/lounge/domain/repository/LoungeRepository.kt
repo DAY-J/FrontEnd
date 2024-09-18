@@ -12,4 +12,5 @@ interface LoungeRepository {
     suspend fun deleteComment(postingId: Int, commentId: Int): Flow<Boolean>
     suspend fun editComment(postingId: Int, commentId: Int, comment: String, anonymous: Boolean): Flow<CommentEntity?>
     suspend fun getAllPostings(): Flow<List<LoungePostingEntity>>
+    suspend fun likePosting(postingId: Int): Flow<Boolean>
 }

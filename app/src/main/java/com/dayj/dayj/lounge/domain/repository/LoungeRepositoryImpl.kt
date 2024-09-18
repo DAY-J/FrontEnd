@@ -127,11 +127,14 @@ class LoungeRepositoryImpl @Inject constructor(
                     }.filter { comment ->
                         !childComments.map { it.id }.contains(comment.id)
                     },
-                    commentCount = model.postView,
+                    commentCount = model.comment.size,
+                    isLiked = false
                 )
             }
         }
     }
+
+    override suspend fun likePosting(postingId: Int): Flow<Boolean> = loungeDataSource.likePosting(postingId = postingId)
 
     fun ResponsePosting.CommentModel.toCommentEntity(): CommentEntity {
         return CommentEntity(

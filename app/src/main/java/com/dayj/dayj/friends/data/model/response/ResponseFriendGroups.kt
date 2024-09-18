@@ -33,6 +33,6 @@ data class ResponseFriendGroups(
         val appUserId: Int,
         val nickname: String,
         val achievementRate: AchievementRateInfo? = null,
-        val groupMemberPlan: List<MemberPlanInfo>?
+        val groupMemberPlans: List<MemberPlanInfo>?
     )
 }

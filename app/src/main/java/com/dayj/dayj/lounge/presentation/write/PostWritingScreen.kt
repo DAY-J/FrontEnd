@@ -222,7 +222,7 @@ fun PostWritingScreen(
                     ) {
                         items(
                             items = LoungeTagEnum.values()
-                                .filter { it != LoungeTagEnum.ALL && it != LoungeTagEnum.POPULAR },
+                                .filter { it != LoungeTagEnum.ALL },
                             itemContent = {
                                 Box(
                                     modifier = Modifier

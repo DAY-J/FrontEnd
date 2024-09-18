@@ -17,5 +17,6 @@ data class LoungePostingEntity(
     val images: List<String>,
     val likeCount: Int,
     val comments: List<CommentEntity>,
-    val commentCount: Int
+    val commentCount: Int,
+    val isLiked: Boolean
 ): Parcelable

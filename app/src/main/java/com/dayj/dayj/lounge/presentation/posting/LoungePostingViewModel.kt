@@ -11,6 +11,7 @@ import com.thedeanda.lorem.LoremIpsum
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 import kotlin.random.Random
@@ -195,6 +196,24 @@ class LoungePostingViewModel @Inject constructor(
                         _selectedCommentIdForSetting.value = null
                     }
                 }
+            }
+        }
+    }
+
+    fun likePosting() {
+        viewModelScope.launch {
+            posting.value?.let { loungePosting ->
+                loungeRepository.likePosting(
+                    postingId = loungePosting.id
+                ).collect { success ->
+                    if(success) {
+                        _posting.value = loungePosting.copy(
+                            likeCount = loungePosting.likeCount +1,
+                            isLiked = true
+                        )
+                    }
+                }
+
             }
         }
     }

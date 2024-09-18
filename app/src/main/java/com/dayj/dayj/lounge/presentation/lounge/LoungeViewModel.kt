@@ -1,5 +1,6 @@
 package com.dayj.dayj.lounge.presentation.lounge
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.dayj.dayj.lounge.domain.repository.LoungeRepository
@@ -37,13 +38,11 @@ class LoungeViewModel @Inject constructor(
     private val _sort = MutableStateFlow(0)
     val sort = _sort.asStateFlow()
 
-    init {
-        getAllPostings()
-    }
 
     fun changeSort(sort: Int) {
         _sort.value = sort
-        _postings.value = when (sort) {
+        Log.e("====", "${sort}")
+        _filteredLoungeItems.value = when (sort) {
             0 -> {
                 postings.value.sortedByDescending {
                     it.createdDate
@@ -79,14 +78,13 @@ class LoungeViewModel @Inject constructor(
             _filteredLoungeItems.value = postings.value
                 .toMutableList()
                 .filter {
-                    if(it.isNameHidden) "익명".contains(query) else it.writerName.contains(query) ||
+                    (if(it.isNameHidden) "익명".contains(query) else it.writerName.contains(query)) ||
                     it.title.contains(query)
                         || it.tag.tagText.contains(query)
             }
         } else {
             _filteredLoungeItems.value = postings.value
         }
-
     }
 
 
@@ -95,10 +93,26 @@ class LoungeViewModel @Inject constructor(
      * **/
     fun getAllPostings() {
         viewModelScope.launch {
-            loungeRepository.getAllPostings().collect {
-                _postings.value = it.sortedByDescending {
-                    it.createdDate
+            loungeRepository.getAllPostings().collect { response ->
+                var sortedResponse = when (sort.value) {
+                    0 -> {
+                        response.sortedByDescending {
+                            it.createdDate
+                        }
+                    }
+                    1 -> {
+                        response.sortedByDescending {
+                            it.likeCount
+                        }
+                    }
+                    else -> {
+                        response.sortedByDescending {
+                            it.commentCount
+                        }
+                    }
                 }
+                _postings.value = sortedResponse
+
                 changeSelectedTag(selectedTag.value)
             }
         }
