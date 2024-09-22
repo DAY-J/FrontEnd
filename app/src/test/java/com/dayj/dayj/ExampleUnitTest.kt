@@ -1,4 +1,4 @@
-package com.dayj.dayj
+package com.example.dayj
 
 import org.junit.Test
 
