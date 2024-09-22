@@ -2,17 +2,17 @@ plugins {
     id("com.android.application")
     id("org.jetbrains.kotlin.android")
     id("dagger.hilt.android.plugin")
-    id ("com.google.dagger.hilt.android")
+    id("com.google.dagger.hilt.android")
     id("com.google.devtools.ksp")
     id("kotlin-parcelize")
 }
 
 android {
-    namespace = "com.dayj.dayj"
+    namespace = "com.example.dayj"
     compileSdk = 34
 
     defaultConfig {
-        applicationId = "com.dayj.dayj"
+        applicationId = "com.example.dayj"
         minSdk = 26
         targetSdk = 34
         versionCode = 1
@@ -22,6 +22,12 @@ android {
         vectorDrawables {
             useSupportLibrary = true
         }
+
+        buildConfigField(
+            "String",
+            "GOOGLE_CLIENT_ID",
+            "\"242647061672-neilee1h2i1dr2j778dfml46ao42trok.apps.googleusercontent.com\""
+        )
     }
 
     buildTypes {
@@ -42,6 +48,7 @@ android {
     }
     buildFeatures {
         compose = true
+        buildConfig = true
     }
     composeOptions {
         kotlinCompilerExtensionVersion = "1.5.11"
@@ -54,6 +61,7 @@ android {
 }
 
 dependencies {
+    implementation("com.google.android.gms:play-services-auth:20.5.0")
 
     implementation("androidx.navigation:navigation-compose:2.7.7")
 
@@ -82,7 +90,7 @@ dependencies {
     val lifecycleVersion = "2.8.4"
 
     implementation("com.google.dagger:hilt-android:$hiltVersion")
-    implementation ("androidx.hilt:hilt-navigation-compose:${hiltNavigationCompose}")
+    implementation("androidx.hilt:hilt-navigation-compose:${hiltNavigationCompose}")
     implementation("androidx.lifecycle:lifecycle-viewmodel-ktx:${lifecycleVersion}")
     implementation("androidx.lifecycle:lifecycle-viewmodel-compose:${viewModelComposeVersion}")
     ksp("com.google.dagger:hilt-android-compiler:$hiltVersion")
@@ -97,5 +105,9 @@ dependencies {
     implementation("com.github.commandiron:WheelPickerCompose:1.1.11")
     implementation("com.google.code.gson:gson:2.10.1")
     implementation("com.squareup.retrofit2:converter-gson:2.11.0")
+
+
+    implementation("androidx.datastore:datastore-preferences:1.1.1")
+    implementation("androidx.datastore:datastore-preferences-core:1.1.1")
 
 }

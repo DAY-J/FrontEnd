@@ -1,4 +1,4 @@
-package com.dayj.dayj
+package com.example.dayj
 
 import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.ext.junit.runners.AndroidJUnit4
@@ -19,6 +19,6 @@ class ExampleInstrumentedTest {
     fun useAppContext() {
         // Context of the app under test.
         val appContext = InstrumentationRegistry.getInstrumentation().targetContext
-        assertEquals("com.dayj.dayj", appContext.packageName)
+        assertEquals("com.example.dayj", appContext.packageName)
     }
 }
