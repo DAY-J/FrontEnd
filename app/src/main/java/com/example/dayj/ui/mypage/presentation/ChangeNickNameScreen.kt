@@ -42,18 +42,19 @@ import com.example.dayj.ui.theme.RedFF00
 
 @Composable
 fun ChangeNickNameScreen(
-    userEntity: UserEntity?,
     onClickBack: () -> Unit,
     viewModel: MyPageViewModel = hiltViewModel()
 ) {
-    LaunchedEffect(key1 = Unit) {
-        viewModel.updateUserEntity(userEntity)
-    }
     val context = LocalContext.current
 
     val nickName = viewModel.nickName.collectAsState().value
     val errorMessage = viewModel.errorMessage.collectAsState().value
     val completable = errorMessage.isEmpty() && nickName.isNotEmpty()
+
+    LaunchedEffect(key1 = Unit) {
+        viewModel.getCachedUser()
+    }
+
     Box(
         modifier = Modifier
             .fillMaxSize()
@@ -165,17 +166,19 @@ fun ChangeNickNameScreen(
                 modifier = Modifier
                     .fillMaxWidth()
                     .background(
-                        color = if(completable) Green12 else GrayDDD,
+                        color = if (completable) Green12 else GrayDDD,
                         shape = RoundedCornerShape(14.dp)
                     )
                     .clip(shape = RoundedCornerShape(14.dp))
                     .padding(vertical = 16.dp)
                     .clickable {
-                        if(completable)
+                        if (completable)
                             viewModel.completeModification {
-                            Toast.makeText(context, "닉네임 수정을 완료했습니다.", Toast.LENGTH_SHORT).show()
-                            onClickBack()
-                        }
+                                Toast
+                                    .makeText(context, "닉네임 수정을 완료했습니다.", Toast.LENGTH_SHORT)
+                                    .show()
+                                onClickBack()
+                            }
                     },
                 contentAlignment = Alignment.Center
             ) {

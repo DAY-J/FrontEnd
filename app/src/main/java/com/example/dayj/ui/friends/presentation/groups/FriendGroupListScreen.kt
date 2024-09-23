@@ -50,7 +50,7 @@ fun GroupListScreen(
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(top = 35.dp),
+                    .padding(top = 20.dp),
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Text(

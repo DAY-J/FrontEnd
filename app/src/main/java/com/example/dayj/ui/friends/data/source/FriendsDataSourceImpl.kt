@@ -1,6 +1,7 @@
 package com.example.dayj.ui.friends.data.source
 
 import com.example.dayj.data.PreferenceManager
+import com.example.dayj.datastore.SelfUserAccountDataStore
 import com.example.dayj.ui.friends.data.model.request.RequestGroupCreation
 import com.example.dayj.ui.friends.data.model.request.RequestGroupGoal
 import com.example.dayj.ui.friends.data.model.response.ResponseFriendGroups
@@ -11,14 +12,18 @@ import javax.inject.Inject
 
 class FriendsDataSourceImpl @Inject constructor(
     private val apiService: ApiService,
-    private val preferenceManager: PreferenceManager
+    private val userAccountDataSource: SelfUserAccountDataStore
 ): FriendsDataSource {
     override suspend fun createFriendGroup(requestGroupCreation: com.example.dayj.ui.friends.data.model.request.RequestGroupCreation): Flow<Boolean> = flow {
-        val response = apiService.postGroupCreation(
-            userId = preferenceManager.getUserId(),
-            requestGroupCreation = requestGroupCreation
-        )
-        emit(response.isSuccessful)
+        userAccountDataSource.userInfoFlow.collect { userInfo ->
+            userInfo?.let {
+                val response = apiService.postGroupCreation(
+                    userId = it.id,
+                    requestGroupCreation = requestGroupCreation
+                )
+                emit(response.isSuccessful)
+            }
+        }
     }
 
     override suspend fun inviteFriend(email: String, groupId: Int): Flow<Boolean> = flow {
@@ -27,36 +32,52 @@ class FriendsDataSourceImpl @Inject constructor(
     }
 
     override suspend fun getAllGroups(): Flow<List<com.example.dayj.ui.friends.data.model.response.ResponseFriendGroups>> = flow {
-        val response = apiService.getAllGroups(userId = preferenceManager.getUserId())
-        if(response.isSuccessful && response.body() != null) {
-            emit(response.body()!!)
+        userAccountDataSource.userInfoFlow.collect { userInfo ->
+            userInfo?.let {
+                val response = apiService.getAllGroups(userId = it.id)
+                if(response.isSuccessful && response.body() != null) {
+                    emit(response.body()!!)
+                }
+            }
         }
     }
 
     override suspend fun getSpecificGroup(groupId: Int): Flow<com.example.dayj.ui.friends.data.model.response.ResponseFriendGroups> = flow {
-        val response = apiService.getSpecificGroup(
-            userId = preferenceManager.getUserId(),
-            groupId = groupId
-        )
-        if(response.isSuccessful && response.body() != null) {
-            emit(response.body()!!)
+        userAccountDataSource.userInfoFlow.collect { userInfo ->
+            userInfo?.let {
+                val response = apiService.getSpecificGroup(
+                    userId = it.id,
+                    groupId = groupId
+                )
+                if(response.isSuccessful && response.body() != null) {
+                    emit(response.body()!!)
+                }
+            }
         }
     }
 
     override suspend fun editGroupGoal(groupId: Int, requestGroupGoal: com.example.dayj.ui.friends.data.model.request.RequestGroupGoal) = flow {
-        val response = apiService.patchGroupGoalEdit(
-            groupId = groupId,
-            requestGroupGoal = requestGroupGoal,
-            userId = preferenceManager.getUserId()
-        )
-        emit(response.isSuccessful)
+        userAccountDataSource.userInfoFlow.collect { userInfo ->
+            userInfo?.let {
+                val response = apiService.patchGroupGoalEdit(
+                    groupId = groupId,
+                    requestGroupGoal = requestGroupGoal,
+                    userId = it.id
+                )
+                emit(response.isSuccessful)
+            }
+        }
     }
 
-    override suspend fun exitGroup(userId: Int, groupId: Int): Flow<Boolean> = flow {
-        val response = apiService.exitGroup(
-            appUserId = userId,
-            groupId = groupId
-        )
-        emit(response.isSuccessful)
+    override suspend fun exitGroup( groupId: Int): Flow<Boolean> = flow {
+        userAccountDataSource.userInfoFlow.collect { userInfo ->
+            userInfo?.let {
+                val response = apiService.exitGroup(
+                    appUserId = it.id,
+                    groupId = groupId
+                )
+                emit(response.isSuccessful)
+            }
+        }
     }
 }

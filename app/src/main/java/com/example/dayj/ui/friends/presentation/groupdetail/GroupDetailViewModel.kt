@@ -103,7 +103,6 @@ class GroupDetailViewModel @Inject constructor(
     fun exitGroup(resultListener: () -> Unit) {
         viewModelScope.launch {
             friendsRepository.exitGroup(
-                userId = preferenceManager.getUserId(),
                 groupId = groupId.value
             ).collect {
                 resultListener()

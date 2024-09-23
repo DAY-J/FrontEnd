@@ -14,6 +14,8 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -22,6 +24,7 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.dayj.R
 import com.example.dayj.ui.theme.Background
 import com.example.dayj.ui.theme.Black3A
@@ -29,8 +32,13 @@ import com.example.dayj.ui.theme.Gray9C9
 
 @Composable
 fun LinkedAccountScreen(
+    viewModel: MyPageViewModel = hiltViewModel(),
     onClickBack: () -> Unit,
 ) {
+    LaunchedEffect(key1 = Unit) {
+        viewModel.getCachedUser()
+    }
+
     Box(
         modifier = Modifier
             .fillMaxSize()
@@ -87,7 +95,7 @@ fun LinkedAccountScreen(
                 contentAlignment = Alignment.CenterStart
             ) {
                 Text(
-                    "useremail@gmail.com",
+                    text = viewModel.userEntity.collectAsState().value?.userEmail ?: "계정 정보 없음",
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(horizontal = 10.dp),

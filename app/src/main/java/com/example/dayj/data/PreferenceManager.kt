@@ -18,12 +18,28 @@ class PreferenceManager(
         putValue(USER_NAME, name)
     }
 
+    fun putUserNickName(nickName: String) {
+        putValue(USER_NICKNAME, nickName)
+    }
+
+    fun putUserEmail(email: String) {
+        putValue(USER_EMAIL, email)
+    }
+
     fun getUserId(): Int {
         return getInt(USER_ID)
     }
 
     fun getUserName(): String {
         return getString(USER_NAME)
+    }
+
+    fun getUserEmail(): String {
+        return getString(USER_EMAIL)
+    }
+
+    fun getUserNickName(): String {
+        return getString(USER_NICKNAME)
     }
 
     fun getString(key: String): String {
@@ -59,6 +75,8 @@ class PreferenceManager(
     companion object {
         private const val USER_ID = "USER_ID"
         private const val USER_NAME = "USER_NAME"
+        private const val USER_NICKNAME= "USER_NICKNAME"
+        private const val USER_EMAIL = "USER_EMAIL"
         private const val PREF_NAME = "DAY_J_PREFERENCES"
     }
 }

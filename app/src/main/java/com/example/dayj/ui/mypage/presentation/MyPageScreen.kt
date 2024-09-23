@@ -1,5 +1,6 @@
 package com.example.dayj.ui.mypage.presentation
 
+import android.widget.Toast
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -20,6 +21,8 @@ import androidx.compose.material3.Switch
 import androidx.compose.material3.SwitchDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -28,12 +31,14 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.dayj.R
 import com.example.dayj.ui.friends.domain.entity.UserEntity
 import com.example.dayj.ui.theme.Background
@@ -45,11 +50,17 @@ import com.example.dayj.util.Extensions.noRippleClickable
 
 @Composable
 fun MyPageScreen(
+    viewModel: MyPageViewModel = hiltViewModel(),
     navToChangeNickName: (UserEntity) -> Unit,
-    navToLinkedAccount: () -> Unit
+    navToLinkedAccount: () -> Unit,
+    navToLogIn:() -> Unit
 ) {
     var receivePushMessage by remember { mutableStateOf(true) }
-    var userEntity  = UserEntity(userName = "호돌이", userId = 123)
+    val context = LocalContext.current
+
+    LaunchedEffect(key1 = Unit) {
+        viewModel.getCachedUser()
+    }
 
     Box(
         modifier = Modifier
@@ -88,7 +99,7 @@ fun MyPageScreen(
                     Spacer(modifier = Modifier.padding(end = 15.dp))
 
                     Text(
-                        text = "호돌이",
+                        text = viewModel.userEntity.collectAsState().value?.userNickName ?: "정보 없음",
                         style = TextStyle(
                             color = Black3A,
                             fontWeight = FontWeight.Bold,
@@ -102,7 +113,7 @@ fun MyPageScreen(
                         modifier = Modifier
                             .size(25.dp)
                             .clickable {
-                                navToChangeNickName(userEntity)
+                                viewModel.userEntity.value?.let(navToChangeNickName)
                             },
                         painter = painterResource(id = R.drawable.ic_edit),
                         contentDescription = "",
@@ -213,13 +224,16 @@ fun MyPageScreen(
                 ) {
                     Column {
                         MyPageButton(buttonText = "로그아웃") {
-
+                            viewModel.logout()
+                            navToLogIn()
+                            Toast.makeText(context, "로그아웃을 완료하였습니다.", Toast.LENGTH_SHORT).show()
                         }
 
                         MyPageButtonDivider()
 
                         MyPageButton(buttonText = "회원탈퇴", textColor = RedFF00) {
-
+                            viewModel.logout()
+                            navToLogIn()
                         }
                     }
                 }

@@ -46,8 +46,8 @@ class FriendsRepositoryImpl @Inject constructor(
         )
     }
 
-    override suspend fun exitGroup(userId: Int, groupId: Int): Flow<Boolean> {
-        return friendsDataSource.exitGroup(userId, groupId)
+    override suspend fun exitGroup(groupId: Int): Flow<Boolean> {
+        return friendsDataSource.exitGroup(groupId)
     }
 
     fun com.example.dayj.ui.friends.data.model.response.ResponseFriendGroups.toEntity(): FriendsGroupEntity {
@@ -62,6 +62,8 @@ class FriendsRepositoryImpl @Inject constructor(
                     GroupParticipantEntity(
                         user = UserEntity(
                             userName = member.nickname,
+                            userEmail = "",
+                            userNickName = member.nickname,
                             userId = member.appUserId
                         ),
                         achievementRate = member.achievementRate?.achievementRate ?: 0,

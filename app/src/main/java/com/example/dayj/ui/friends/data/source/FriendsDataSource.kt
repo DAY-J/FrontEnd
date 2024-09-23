@@ -25,7 +25,6 @@ interface FriendsDataSource {
     ): Flow<Boolean>
 
     suspend fun exitGroup(
-        userId: Int,
         groupId: Int
     ): Flow<Boolean>
 }

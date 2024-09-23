@@ -87,6 +87,7 @@ object AppProviders {
     @OriginalRetrofit
     fun provideOriginalOkHttpClientBuilder(
         interceptor: Interceptor,
+        authenticator: AuthAuthenticator
     ): OkHttpClient =
         OkHttpClient.Builder().apply {
             addInterceptor(interceptor)
@@ -94,6 +95,7 @@ object AppProviders {
             writeTimeout(60, TimeUnit.SECONDS)
             readTimeout(60, TimeUnit.SECONDS)
             addInterceptor(loggingInterceptor)
+            authenticator(authenticator)
         }.build()
 
 
@@ -160,10 +162,10 @@ object AppProviders {
     @Singleton
     fun provideFriendsDataSource(
         apiService: ApiService,
-        preferenceManager: PreferenceManager
+        userAccountDataSource: SelfUserAccountDataStore
     ): FriendsDataSource = FriendsDataSourceImpl(
         apiService = apiService,
-        preferenceManager = preferenceManager
+        userAccountDataSource = userAccountDataSource
     )
 
     @Provides

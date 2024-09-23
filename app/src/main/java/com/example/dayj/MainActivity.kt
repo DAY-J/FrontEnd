@@ -40,6 +40,7 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavOptions
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -86,9 +87,6 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         setContent {
             val navController = rememberNavController()
-
-            userPreferenceManager.putUserId(1)
-            userPreferenceManager.putUserName("이신형")
 
             DayJTheme {
                 Surface(
@@ -181,6 +179,11 @@ class MainActivity : ComponentActivity() {
                                     navController.navigate(
                                         NavigatorScreens.LinkedAccount.name,
                                     )
+                                },
+                                navToLogIn = {
+                                    navController.navigate(NavigatorScreens.Login.name) {
+                                        popUpTo(navController.graph.id) { inclusive = true }
+                                    }
                                 }
                             )
                         }
@@ -246,12 +249,7 @@ class MainActivity : ComponentActivity() {
                             )
                         }
                         composable(NavigatorScreens.ChangeNickName.name) {
-                            val userEntity =
-                                navController.previousBackStackEntry?.savedStateHandle?.get<UserEntity>(
-                                    userEntityKey
-                                )
                             ChangeNickNameScreen(
-                                userEntity = userEntity,
                                 onClickBack = {
                                     navController.popBackStack()
                                 }
@@ -275,6 +273,7 @@ fun MainScreen(
     navToUpdateTodo: (PlanResponse) -> Unit,
     navToLinkedAccount: () -> Unit,
     navToChangeNickName: (UserEntity) -> Unit,
+    navToLogIn: () -> Unit
 ) {
     val bottomItems = listOf(
         BottomNavItem.HOME,
@@ -305,7 +304,10 @@ fun MainScreen(
                 3 -> FriendsContainerScreen()
                 4 -> MyPageScreen(
                     navToChangeNickName = navToChangeNickName,
-                    navToLinkedAccount = navToLinkedAccount
+                    navToLinkedAccount = navToLinkedAccount,
+                    navToLogIn = {
+                        navToLogIn()
+                    }
                 )
             }
         }

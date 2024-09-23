@@ -2,17 +2,22 @@ package com.example.dayj.ui.mypage.presentation
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.dayj.data.PreferenceManager
+import com.example.dayj.datastore.SelfUserAccountDataStore
+import com.example.dayj.datastore.UserInfo
 import com.example.dayj.ui.friends.domain.entity.UserEntity
 import com.example.dayj.ui.mypage.data.UserDataSource
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
+import java.util.prefs.Preferences
 import javax.inject.Inject
 
 @HiltViewModel
 class MyPageViewModel @Inject constructor(
-    private val userDataSource: UserDataSource
+    private val userDataSource: UserDataSource,
+    private val userAccountDataSource: SelfUserAccountDataStore
 ): ViewModel() {
     private val _errorMessage = MutableStateFlow("")
     val errorMessage = _errorMessage.asStateFlow()
@@ -23,6 +28,23 @@ class MyPageViewModel @Inject constructor(
     private val _userEntity = MutableStateFlow<UserEntity?>(null)
     val userEntity = _userEntity.asStateFlow()
 
+    fun getCachedUser() {
+        viewModelScope.launch {
+            userAccountDataSource.userInfoFlow.collect { userInfo ->
+                userInfo?.let {
+                    UserEntity(
+                        userName = it.username,
+                        userEmail = it.username,
+                        userNickName = it.nickname,
+                        userId = it.id
+                    ).let {
+                        _userEntity.value = it
+                        _nickName.value = it.userNickName
+                    }
+                }
+            }
+        }
+    }
 
     fun updateUserEntity(user: UserEntity?) {
         _userEntity.value = user
@@ -48,9 +70,30 @@ class MyPageViewModel @Inject constructor(
                     _errorMessage.value = errorMessage
                     _nickName.value = ""
                 } else {
-                    successListener()
+                    userAccountDataSource.userInfoFlow.collect { userInfo ->
+                        userInfo?.let {
+                            userAccountDataSource.setUserInfo(it.copy(nickname = nickName.value))
+                            successListener()
+                        }
+                    }
                 }
             }
+        }
+    }
+
+    fun logout() {
+        viewModelScope.launch {
+            userAccountDataSource.setUserInfo(
+                UserInfo(
+                    id = -1,
+                    username = "",
+                    password = "",
+                    role = "",
+                    nickname = "",
+                    profilePhoto = null,
+                    isAlarm = false
+                )
+            )
         }
     }
 }
