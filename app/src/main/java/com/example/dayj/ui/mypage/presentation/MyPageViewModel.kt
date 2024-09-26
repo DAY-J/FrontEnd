@@ -10,6 +10,7 @@ import com.example.dayj.ui.mypage.data.UserDataSource
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import java.util.prefs.Preferences
 import javax.inject.Inject
@@ -30,8 +31,8 @@ class MyPageViewModel @Inject constructor(
 
     fun getCachedUser() {
         viewModelScope.launch {
-            userAccountDataSource.userInfoFlow.collect { userInfo ->
-                userInfo?.let {
+            userAccountDataSource.userInfoFlow.first()?.let { userInfo ->
+                userInfo.let {
                     UserEntity(
                         userName = it.username,
                         userEmail = it.username,
@@ -65,18 +66,20 @@ class MyPageViewModel @Inject constructor(
      * **/
     fun completeModification(successListener: () ->Unit) {
         viewModelScope.launch {
-            userDataSource.modifyNickName(nickName.value).collect { errorMessage ->
-                if(errorMessage.isNotEmpty()) {
-                    _errorMessage.value = errorMessage
-                    _nickName.value = ""
-                } else {
-                    userAccountDataSource.userInfoFlow.collect { userInfo ->
-                        userInfo?.let {
-                            userAccountDataSource.setUserInfo(it.copy(nickname = nickName.value))
+            runCatching {
+                userDataSource.modifyNickName(nickName.value).collect { errorMessage ->
+                    if(errorMessage.isNotEmpty()) {
+                        _errorMessage.value = errorMessage
+                        _nickName.value = ""
+                    } else {
+                        userAccountDataSource.userInfoFlow.first()?.let { userInfo ->
+                            userAccountDataSource.setUserInfo(userInfo.copy(nickname = nickName.value))
                             successListener()
                         }
                     }
                 }
+            }.getOrElse {
+
             }
         }
     }

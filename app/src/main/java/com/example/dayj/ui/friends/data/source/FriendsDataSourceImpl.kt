@@ -7,6 +7,8 @@ import com.example.dayj.ui.friends.data.model.request.RequestGroupGoal
 import com.example.dayj.ui.friends.data.model.response.ResponseFriendGroups
 import com.example.dayj.network.ApiService
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.cancel
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flow
 import javax.inject.Inject
 
@@ -15,8 +17,8 @@ class FriendsDataSourceImpl @Inject constructor(
     private val userAccountDataSource: SelfUserAccountDataStore
 ): FriendsDataSource {
     override suspend fun createFriendGroup(requestGroupCreation: com.example.dayj.ui.friends.data.model.request.RequestGroupCreation): Flow<Boolean> = flow {
-        userAccountDataSource.userInfoFlow.collect { userInfo ->
-            userInfo?.let {
+        userAccountDataSource.userInfoFlow.first()?.let { userInfo ->
+            userInfo.let {
                 val response = apiService.postGroupCreation(
                     userId = it.id,
                     requestGroupCreation = requestGroupCreation
@@ -32,8 +34,8 @@ class FriendsDataSourceImpl @Inject constructor(
     }
 
     override suspend fun getAllGroups(): Flow<List<com.example.dayj.ui.friends.data.model.response.ResponseFriendGroups>> = flow {
-        userAccountDataSource.userInfoFlow.collect { userInfo ->
-            userInfo?.let {
+        userAccountDataSource.userInfoFlow.first()?.let { userInfo ->
+            userInfo.let {
                 val response = apiService.getAllGroups(userId = it.id)
                 if(response.isSuccessful && response.body() != null) {
                     emit(response.body()!!)
@@ -43,8 +45,8 @@ class FriendsDataSourceImpl @Inject constructor(
     }
 
     override suspend fun getSpecificGroup(groupId: Int): Flow<com.example.dayj.ui.friends.data.model.response.ResponseFriendGroups> = flow {
-        userAccountDataSource.userInfoFlow.collect { userInfo ->
-            userInfo?.let {
+        userAccountDataSource.userInfoFlow.first()?.let { userInfo ->
+            userInfo.let {
                 val response = apiService.getSpecificGroup(
                     userId = it.id,
                     groupId = groupId
@@ -57,8 +59,8 @@ class FriendsDataSourceImpl @Inject constructor(
     }
 
     override suspend fun editGroupGoal(groupId: Int, requestGroupGoal: com.example.dayj.ui.friends.data.model.request.RequestGroupGoal) = flow {
-        userAccountDataSource.userInfoFlow.collect { userInfo ->
-            userInfo?.let {
+        userAccountDataSource.userInfoFlow.first()?.let { userInfo ->
+            userInfo.let {
                 val response = apiService.patchGroupGoalEdit(
                     groupId = groupId,
                     requestGroupGoal = requestGroupGoal,
@@ -70,8 +72,8 @@ class FriendsDataSourceImpl @Inject constructor(
     }
 
     override suspend fun exitGroup( groupId: Int): Flow<Boolean> = flow {
-        userAccountDataSource.userInfoFlow.collect { userInfo ->
-            userInfo?.let {
+        userAccountDataSource.userInfoFlow.first()?.let { userInfo ->
+            userInfo.let {
                 val response = apiService.exitGroup(
                     appUserId = it.id,
                     groupId = groupId

@@ -102,7 +102,6 @@ fun GroupListScreen(
                     groupListViewModel.createFriendGroup(groupName = groupName)
                 }
             )
-
         }
     }
 }

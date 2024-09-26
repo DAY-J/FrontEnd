@@ -112,7 +112,7 @@ fun LoungeItemView(
                 Text(
                     modifier = Modifier
                         .padding(start = 3.dp),
-                    text = loungePostingEntity.comments.size.toString(),
+                    text = loungePostingEntity.commentCount.toString(),
                     fontWeight = FontWeight.Medium,
                     fontSize = 12.sp,
                     color = Black3A

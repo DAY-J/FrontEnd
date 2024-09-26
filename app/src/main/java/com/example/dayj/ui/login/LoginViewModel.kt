@@ -6,6 +6,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.dayj.data.repo.LoginAuthorizationRepository
 import com.example.dayj.data.repo.UserRepository
+import com.example.dayj.datastore.UserInfo
 import com.example.dayj.domain.usecase.login.LoginUseCase
 import com.example.dayj.domain.usecase.user.GetUsersUseCase
 import com.example.dayj.util.Result
@@ -29,6 +30,24 @@ class LoginViewModel @Inject constructor(
 
     private val _loginViewEffect = MutableSharedFlow<LoginEffect>()
     val loginViewEffect = _loginViewEffect.asSharedFlow()
+
+    fun tempLogin() {
+        viewModelScope.launch {
+            loginAuthorizationRepository.updateUserInfo(
+                UserInfo(
+                    id = 1,
+                    username = "dfdf",
+                    password = "",
+                    role = "",
+                    nickname = "sdfasdf",
+                    profilePhoto = null,
+                    isAlarm = false
+                )
+            )
+
+        }
+
+    }
 
     fun login(intent: Intent?) {
         if (intent != null) {
