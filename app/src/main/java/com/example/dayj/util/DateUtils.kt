@@ -9,8 +9,8 @@ import java.util.Locale
 
 object DateUtils {
     val dateFormat = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss", Locale.KOREAN)
-    val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.ssssss")
-    val postingDateFormat = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.ssssss", Locale.KOREAN)
+    val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.ss")
+    val postingDateFormat = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.ss", Locale.KOREAN)
     val formatter2 = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss")
 
     fun String.calculateUpdatedAgo(): String {
@@ -21,8 +21,8 @@ object DateUtils {
             getTimeDifference(postingDate, todayDate)
         }.getOrElse {
             val todayDateString = dateFormat.format(Date())
-            val postingDate = LocalDateTime.parse(this, formatter2)
-            val todayDate = LocalDateTime.parse(todayDateString, formatter2)
+            val postingDate = LocalDateTime.parse(this)
+            val todayDate = LocalDateTime.parse(todayDateString)
             getTimeDifference(postingDate, todayDate)
         }
     }

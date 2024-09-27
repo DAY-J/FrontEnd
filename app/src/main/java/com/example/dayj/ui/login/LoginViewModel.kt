@@ -50,6 +50,10 @@ class LoginViewModel @Inject constructor(
     }
 
     fun login(intent: Intent?) {
+        viewModelScope.launch {
+            _loginViewEffect.emit(LoginEffect.ShowToast(""))
+        }
+
         if (intent != null) {
             val task: Task<GoogleSignInAccount> =
                 GoogleSignIn.getSignedInAccountFromIntent(intent)

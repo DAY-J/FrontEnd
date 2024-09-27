@@ -135,7 +135,7 @@ fun LoungePostingScreen(
                     Spacer(modifier = Modifier.height(12.dp))
 
                     CommentListView(
-                        myNickName = viewModel.myUserName,
+                        myNickName = viewModel.myUserName.collectAsState().value,
                         comments = posting.comments,
                         onClickChildComment = { parentCommentId ->
                             viewModel.updateSelectedParentCommentId(parentCommentId)
@@ -330,7 +330,7 @@ fun PostingItem(
                 Text(
                     modifier = Modifier
                         .padding(start = 3.dp),
-                    text = posting.comments.size.toString(),
+                    text = posting.commentCount.toString(),
                     fontWeight = FontWeight.Medium,
                     fontSize = 12.sp,
                     color = Black3A
@@ -361,7 +361,7 @@ fun CommentListView(
                 .padding(horizontal = 12.dp, vertical = 6.dp)
         ) {
             Text(
-                text = "댓글 ${comments.size}",
+                text = "댓글 ${comments.size + comments.map { it.children }.flatten().size}",
                 fontWeight = FontWeight.Medium,
                 fontSize = 12.sp,
                 color = Black2A

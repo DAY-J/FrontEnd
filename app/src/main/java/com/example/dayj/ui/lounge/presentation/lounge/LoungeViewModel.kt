@@ -41,7 +41,6 @@ class LoungeViewModel @Inject constructor(
 
     fun changeSort(sort: Int) {
         _sort.value = sort
-        Log.e("====", "${sort}")
         _filteredLoungeItems.value = when (sort) {
             0 -> {
                 postings.value.sortedByDescending {

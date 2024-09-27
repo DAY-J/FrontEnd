@@ -190,10 +190,10 @@ object AppProviders {
     @Singleton
     fun provideLoungeRepository(
         loungeDataSource: LoungeDataSource,
-        preferenceManager: PreferenceManager
+        dataStore: SelfUserAccountDataStore
     ): LoungeRepository = LoungeRepositoryImpl(
         loungeDataSource = loungeDataSource,
-        preferenceManager = preferenceManager
+        dataStore = dataStore
     )
 
     @Provides
@@ -220,9 +220,9 @@ object AppProviders {
     @Singleton
     fun provideUserDataSource(
         apiService: ApiService,
-        preferenceManager: PreferenceManager
+        dataStore: SelfUserAccountDataStore
     ): UserDataSource = UserDataSourceImpl(
         apiService = apiService,
-        preferenceManager = preferenceManager
+        dataStore = dataStore
     )
 }

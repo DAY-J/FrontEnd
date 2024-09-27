@@ -1,5 +1,6 @@
 plugins {
     id("com.android.application")
+    id("com.google.gms.google-services") //추가
     id("org.jetbrains.kotlin.android")
     id("dagger.hilt.android.plugin")
     id("com.google.dagger.hilt.android")
@@ -82,6 +83,8 @@ dependencies {
     debugImplementation("androidx.compose.ui:ui-test-manifest")
     implementation("io.coil-kt:coil-compose:2.6.0")
     implementation("com.thedeanda:lorem:2.2")
+    implementation(platform("com.google.firebase:firebase-bom:33.3.0")) //추가
+    implementation("com.google.firebase:firebase-analytics") //추가
 
 
     val hiltVersion = "2.51"

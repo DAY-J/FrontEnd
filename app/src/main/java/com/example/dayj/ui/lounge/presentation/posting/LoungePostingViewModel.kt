@@ -3,24 +3,27 @@ package com.example.dayj.ui.lounge.presentation.posting
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.dayj.data.PreferenceManager
+import com.example.dayj.datastore.SelfUserAccountDataStore
 import com.example.dayj.ui.lounge.domain.entity.LoungePostingEntity
 import com.example.dayj.ui.lounge.domain.repository.LoungeRepository
 import com.thedeanda.lorem.LoremIpsum
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
 class LoungePostingViewModel @Inject constructor(
     private val loungeRepository: LoungeRepository,
-    private val preferenceManager: PreferenceManager
+    private val preferenceManager: PreferenceManager,
+    private val dataStore: SelfUserAccountDataStore
 ): ViewModel(){
     private val lorem = LoremIpsum.getInstance()
 
-    val myUserName = preferenceManager.getUserName()
-    val myUserId = preferenceManager.getUserId()
+    val myUserName = MutableStateFlow("")
+    val myUserId = MutableStateFlow(-1)
 
     private val _postingId = MutableStateFlow(-1)
     val postingId = _postingId.asStateFlow()
@@ -39,6 +42,15 @@ class LoungePostingViewModel @Inject constructor(
 
     private val _selectedCommentIdForSetting = MutableStateFlow<Int?>(null)
     val selectedCommentIdForSetting = _selectedCommentIdForSetting.asStateFlow()
+
+    init {
+        viewModelScope.launch {
+            dataStore.userInfoFlow.first()?.let {
+                myUserName.value = it.nickname ?: ""
+                myUserId.value = it.id
+            }
+        }
+    }
 
     fun updateSelectedParentCommentId(commentId: Int) {
         _selectedParentCommentId.value = commentId

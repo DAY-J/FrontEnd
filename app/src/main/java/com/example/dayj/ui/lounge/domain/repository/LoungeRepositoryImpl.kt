@@ -1,18 +1,20 @@
 package com.example.dayj.ui.lounge.domain.repository
 
 import com.example.dayj.data.PreferenceManager
+import com.example.dayj.datastore.SelfUserAccountDataStore
 import com.example.dayj.ui.lounge.data.source.LoungeDataSource
 import com.example.dayj.ui.lounge.domain.LoungeTagEnum
 import com.example.dayj.ui.lounge.domain.entity.CommentEntity
 import com.example.dayj.ui.lounge.domain.entity.LoungePostingEntity
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
 import okhttp3.MultipartBody
 import javax.inject.Inject
 
 class LoungeRepositoryImpl @Inject constructor(
     private val loungeDataSource: LoungeDataSource,
-    private val preferenceManager: PreferenceManager
+    private val dataStore: SelfUserAccountDataStore
 ): LoungeRepository {
     override suspend fun writePosting(title: String, content: String, tag: String, anonymous: Boolean, images: List<MultipartBody.Part>): Flow<Boolean> {
         val request = com.example.dayj.ui.lounge.data.model.RequestPostingCreation(
@@ -21,8 +23,9 @@ class LoungeRepositoryImpl @Inject constructor(
             postTag = tag,
             isAnonymous = anonymous
         )
+        val userId = dataStore.userInfoFlow.first()?.id;
         return loungeDataSource.writePosting(
-            userId = preferenceManager.getUserId(),
+            userId = userId ?: -1,
             requestPostingCreation = request,
             images = images
         )
@@ -33,6 +36,7 @@ class LoungeRepositoryImpl @Inject constructor(
         comment: String,
         anonymous: Boolean
     ): Flow<CommentEntity?> {
+        val userId = dataStore.userInfoFlow.first()?.id ?: -1
         val request = com.example.dayj.ui.lounge.data.model.RequestCommentModel(
             content = comment,
             isAnonymous = anonymous
@@ -40,7 +44,7 @@ class LoungeRepositoryImpl @Inject constructor(
 
         return loungeDataSource.writeComment(
             postingId = postingId,
-            userId = preferenceManager.getUserId(),
+            userId = userId,
             requestCommentModel = request
         ).map {
             it?.toCommentEntity()
@@ -53,6 +57,8 @@ class LoungeRepositoryImpl @Inject constructor(
         commentId: Int,
         anonymous: Boolean
     ): Flow<CommentEntity?> {
+        val userId = dataStore.userInfoFlow.first()?.id ?: -1
+
         val request = com.example.dayj.ui.lounge.data.model.RequestCommentModel(
             content = comment,
             isAnonymous = anonymous
@@ -60,7 +66,7 @@ class LoungeRepositoryImpl @Inject constructor(
 
         return loungeDataSource.writeChildComment(
             postingId = postingId,
-            userId = preferenceManager.getUserId(),
+            userId = userId,
             commentId = commentId,
             requestCommentModel = request
         ).map {
