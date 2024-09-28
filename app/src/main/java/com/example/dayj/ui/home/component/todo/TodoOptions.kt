@@ -409,10 +409,10 @@ object TodoOptions {
         var isExpand by remember { mutableStateOf(false) }
 
         var startDate by remember {
-            mutableStateOf(LocalDate.now())
+            mutableStateOf(LocalDate.now().plusDays(1))
         }
         var endDate by remember {
-            mutableStateOf(LocalDate.now().plusDays(1))
+            mutableStateOf(LocalDate.now().plusDays(2))
         }
 
         var selectDays by remember {

@@ -124,7 +124,7 @@ class AddTodoViewModel @Inject constructor(
                 val convertEndDateTime =
                     LocalDateTime.parse(_todoViewState.value.planOptionRequest.planEndTime)
                         .withYear(selectDate.year).withMonth(selectDate.monthValue)
-                        .withDayOfMonth(selectDate.dayOfMonth + 1)
+                        .withDayOfMonth(selectDate.dayOfMonth)
 
                 planOptionRequest = _todoViewState.value.planOptionRequest.copy(
                     planStartTime = formatLocalDateTime(convertStartDateTime),
